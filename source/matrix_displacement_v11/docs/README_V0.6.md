@@ -189,7 +189,7 @@ matrix_displacement_v06/
 │   ├── test_beam2d_v05.py
 │   ├── test_io_reports_v05.py
 │   └── test_v06.py
-├── artifacts_v06/               # 三角形荷载完整演示成果
+├── outputs/examples/artifacts_v06/               # 三角形荷载完整演示成果
 ├── requirements.txt
 ├── README.md
 └── CHANGELOG.md
@@ -205,7 +205,7 @@ python -m pytest -q
 python -m examples.linear_load_v06
 ```
 
-如果 `python` 命令不可用，可尝试 Windows Python Launcher：`py -m pip ...`。运行第三条命令会生成 `artifacts_v06/`：
+如果 `python` 命令不可用，可尝试 Windows Python Launcher：`py -m pip ...`。运行第三条命令会生成 `outputs/examples/artifacts_v06/`：
 
 ```text
 triangular_beam.json   # 可再次加载的模型

@@ -11,13 +11,13 @@ from matrix_displacement import __version__
 destination = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else root.parent
 destination.mkdir(parents=True, exist_ok=True)
 archive = destination / f'MatrixDisplacement_V{__version__}_Full_Source.zip'
-excluded = {'.venv', '__pycache__', '.pytest_cache', '.git', 'build', 'dist'}
+excluded = {'.venv', '__pycache__', '.pytest_cache', '.git', 'build', 'dist', 'outputs'}
 with ZipFile(archive, 'w', ZIP_DEFLATED) as z:
     for directory, dirs, files in os.walk(root):
         # Prune before traversal: never enter environments, build outputs or
         # test scratch directories (which may have restricted permissions).
         dirs[:]=sorted(d for d in dirs if d not in excluded)
-        if Path(directory)==root/'validation':
+        if Path(directory)==root/'reports'/'validation':
             dirs[:]=[]
         for name in sorted(files):
             path=Path(directory)/name

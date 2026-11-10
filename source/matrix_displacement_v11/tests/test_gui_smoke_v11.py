@@ -15,6 +15,29 @@ def app_and_recovery(monkeypatch, tmp_path):
     yield app, tmp_path
 
 
+@pytest.mark.parametrize('example', ['continuous_beam', 'truss'])
+def test_force_label_modes_preserve_solution_and_export(app_and_recovery, tmp_path, example):
+    w=MainWindow()
+    try:
+        w.editor.load_example(example)
+        w.solve()
+        result=w.result
+        assert result is not None
+        for mode in ('none','extrema','all'):
+            w.force_labels.setCurrentIndex(w.force_labels.findData(mode))
+            assert w.result is result
+            for title in ('轴力 N','剪力 V','弯矩 M'):
+                fig=w.figures[title]
+                labels=[t for t in fig.axes[0].texts if t.get_text().startswith('E')]
+                assert bool(labels)==(mode!='none')
+                if mode=='extrema':
+                    assert len(labels)<=2*len(w.editor.model.elements)
+                fig.savefig(tmp_path / f'{example}_{mode}_{title}.png')
+    finally:
+        w.unsaved=False
+        w.close()
+
+
 def test_gui_autosave_manual_save_and_cleanup(app_and_recovery, tmp_path):
     app, folder = app_and_recovery
     w=MainWindow()

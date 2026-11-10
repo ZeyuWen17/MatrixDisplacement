@@ -1,5 +1,0 @@
-﻿element_id,element_type,component,unit,value
-1,Beam2D,Fy_i,N,1500.0
-1,Beam2D,M_i,N*m,0.0
-1,Beam2D,Fy_j,N,3000.0
-1,Beam2D,M_j,N*m,0.0

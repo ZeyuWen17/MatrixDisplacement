@@ -20,7 +20,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'PySide6 无法导入。' }
     $version = & $python -c 'from matrix_displacement import __version__; print(__version__)'
     if ($LASTEXITCODE -ne 0) { throw 'Cannot read package version.' }
-    $distRoot = Join-Path $root "dist\V$version"
+    $distRoot = Join-Path $root "outputs\dist\V$version"
     $previousQt = $env:QT_QPA_PLATFORM
     try {
         $env:QT_QPA_PLATFORM = 'offscreen'
@@ -35,6 +35,8 @@ try {
         # Prevent unrelated tools on PATH from supplying incompatible Qt dependencies (e.g. ICU).
         $env:PATH = "$(Join-Path $root '.venv\Scripts');$env:SystemRoot\System32;$env:SystemRoot"
         & $python -m PyInstaller --noconfirm --clean --windowed --onedir `
+            --workpath (Join-Path $root "outputs\build") `
+            --specpath (Join-Path $root "outputs\build") `
             --distpath $distRoot `
             --name MatrixDisplacement `
             --paths $root `

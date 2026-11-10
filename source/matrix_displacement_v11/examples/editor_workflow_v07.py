@@ -1,7 +1,7 @@
 """V0.7 GUI-model bridge and teaching report example (runs without PySide6).
 
 Run from project root:
-  python -m examples.editor_workflow_v07 --output artifacts_v07
+  python -m examples.editor_workflow_v07 --output outputs/examples/artifacts_v07
 """
 from argparse import ArgumentParser
 from pathlib import Path
@@ -19,7 +19,7 @@ from matrix_displacement import (
 
 def main(argv=None):
     parser=ArgumentParser()
-    parser.add_argument('--output',default='artifacts_v07')
+    parser.add_argument('--output',default='outputs/examples/artifacts_v07')
     args=parser.parse_args(argv)
     out=Path(args.output)
     out.mkdir(parents=True,exist_ok=True)

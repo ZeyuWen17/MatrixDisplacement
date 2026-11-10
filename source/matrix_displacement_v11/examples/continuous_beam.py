@@ -37,7 +37,7 @@ def make_two_span_beam():
 
 def main(argv=None):
     parser=ArgumentParser(description='Two-span beam: model, report, and plots')
-    parser.add_argument('--output',default='artifacts_v05',help='output directory')
+    parser.add_argument('--output',default='outputs/examples/artifacts_v05',help='output directory')
     args=parser.parse_args(argv)
     out=Path(args.output)
     out.mkdir(parents=True,exist_ok=True)

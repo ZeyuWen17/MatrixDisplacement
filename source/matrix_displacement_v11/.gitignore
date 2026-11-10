@@ -4,3 +4,9 @@ __pycache__/
 .venv/
 .idea/
 .vscode/
+
+# Generated outputs and local validation scratch data
+outputs/
+reports/validation/tmp*/
+reports/validation/mplconfig/
+reports/validation/ui-*/

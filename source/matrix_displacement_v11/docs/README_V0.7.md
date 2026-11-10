@@ -126,7 +126,7 @@ matrix_displacement_v07/
 │   └── visualization.py       # Matplotlib
 ├── examples/
 │   └── editor_workflow_v07.py # 无 Qt 的完整建模→求解→成果导出示例
-├── artifacts_v07/            # 已生成的示例 JSON、报告、CSV、5 张 PNG
+├── outputs/examples/artifacts_v07/            # 已生成的示例 JSON、报告、CSV、5 张 PNG
 ├── tests/                    # 数值测试 + 编辑器测试 + 可选 GUI 冒烟测试
 ├── docs/
 │   ├── README_V0.6.md         # 上一版详细数学与 API 说明
@@ -179,4 +179,4 @@ result = editor.solve(Mode.TEACHING)
 print('中间支座反力 (N):', result.reaction(2, 'uy'))  # 5000
 ```
 
-运行 `python -m examples.editor_workflow_v07` 将生成 `artifacts_v07`：结构 JSON、教学报告、四个 CSV 文件和五张 PNG。这个例子**无需 PySide6**，适合确认数值求解内核和文件导出正常。
+运行 `python -m examples.editor_workflow_v07` 将生成 `outputs/examples/artifacts_v07`：结构 JSON、教学报告、四个 CSV 文件和五张 PNG。这个例子**无需 PySide6**，适合确认数值求解内核和文件导出正常。

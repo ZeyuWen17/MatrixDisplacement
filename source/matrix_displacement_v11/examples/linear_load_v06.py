@@ -2,7 +2,7 @@
 
 Run from the project root:
   python -m examples.linear_load_v06
-  python -m examples.linear_load_v06 --output artifacts_v06
+  python -m examples.linear_load_v06 --output outputs/examples/artifacts_v06
 """
 from argparse import ArgumentParser
 from pathlib import Path
@@ -35,7 +35,7 @@ def make_triangular_beam():
 
 def main(argv=None):
     parser=ArgumentParser(description='V0.6 linearly varying beam load demonstration')
-    parser.add_argument('--output',default='artifacts_v06')
+    parser.add_argument('--output',default='outputs/examples/artifacts_v06')
     args=parser.parse_args(argv)
     out=Path(args.output)
     out.mkdir(parents=True,exist_ok=True)

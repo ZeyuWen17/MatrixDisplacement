@@ -24,6 +24,40 @@ def _axes(ax=None):
     return ax
 
 
+def _install_force_label_layout(ax, labels):
+    """Place text before annotations draw, including resize and savefig renderers."""
+    from matplotlib.artist import Artist
+    from matplotlib.text import Text
+    from .label_layout import LabelRequest, place_labels
+
+    class ForceLabelLayout(Artist):
+        def draw(self, renderer):
+            requests=[]
+            factor=renderer.points_to_pixels(1)
+            for label in labels:
+                label.set_position((8, 18))
+                label.set_ha('left')
+                label.update_positions(renderer)
+                box=Text.get_window_extent(label, renderer)
+                anchor=ax.transData.transform(label.xy)
+                requests.append(LabelRequest(anchor[0],anchor[1],box.width,box.height,
+                                             box.x0-anchor[0],box.y0-anchor[1]))
+            obstacles=[]
+            for text in ax.texts:
+                if text not in labels:
+                    box=text.get_window_extent(renderer)
+                    obstacles.append((box.x0,box.y0,box.x1,box.y1))
+            for label,req,(x,y) in zip(labels,requests,place_labels(requests,obstacles)):
+                # Requests use text bounds; retain baseline offset in points.
+                label.set_position((8+(x-req.anchor_x-req.preferred_x)/factor,
+                                    18+(y-req.anchor_y-req.preferred_y)/factor))
+            self.stale=False
+
+    layout=ForceLabelLayout()
+    layout.set_zorder(2.5)
+    ax.add_artist(layout)
+
+
 def _span(model):
     xy = np.array([[node.x, node.y] for node in model.nodes.values()],dtype=float)
     return max(float(np.ptp(xy[:,0])), float(np.ptp(xy[:,1])), 1.0)
@@ -105,15 +139,19 @@ def plot_structure(model, *, ax=None, show_node_ids=True, show_loads=False):
 
 
 def plot_force_diagram(model, result, component, *, ax=None, points=201,
-                       scale=None, show_node_ids=True, interactive=False):
+                       scale=None, show_node_ids=True, interactive=False,
+                       show_values=True, value_mode='all'):
     """Plot axial N, shear V or moment M alongside the member centerlines.
 
     Positive ordinates point in the local +y direction of each member.
     The supplied scale, if given, is in metres per physical force unit
     (m/N for N,V; m/(N*m) for M). Auto scaling is for display only.
     Discontinuities at point forces are displayed as vertical jumps.
+    Labels show member ends and sampled extrema, not analytical extrema.
     """
     key = component.upper()
+    if value_mode not in ('none', 'extrema', 'all'):
+        raise ValueError('value_mode must be none, extrema or all')
     if key not in ('N','V','M'):
         raise ValueError("component must be 'N', 'V' or 'M'")
     ax = _axes(ax)
@@ -127,6 +165,9 @@ def plot_force_diagram(model, result, component, *, ax=None, points=201,
     if not np.isfinite(scale) or scale < 0:
         raise ValueError('Diagram scale must be a finite nonnegative number')
     _base(model, ax, show_node_ids=show_node_ids)
+    unit = 'N·m' if key == 'M' else 'N'
+    label_count = 0
+    force_labels = []
     for element, r, samples in diagrams:
         n = model.nodes[element.node_i]
         x = samples.x
@@ -134,17 +175,49 @@ def plot_force_diagram(model, result, component, *, ax=None, points=201,
         coords_x = n.x + r.c*x - r.s*ordinates
         coords_y = n.y + r.s*x + r.c*ordinates
         line, = ax.plot(coords_x,coords_y,lw=2,zorder=2)
+        if show_values and value_mode != 'none':
+            values = getattr(samples,key)
+            indices = {int(np.argmin(values)), int(np.argmax(values))}
+            if value_mode == 'all':
+                indices.update((0, len(x)-1))
+            indices = sorted(indices)
+            for order, idx in enumerate(indices):
+                value = float(values[idx])
+                # Hide round-off at free ends, while preserving genuinely small loads.
+                if abs(value) < max_force*1e-10:
+                    value = 0.0
+                label = ax.annotate(f'E{element.id}  x={x[idx]:.3g} m\n{key}={value:.5g} {unit}',
+                            (coords_x[idx],coords_y[idx]),
+                            xytext=((8 if label_count%4<2 else -8), (18 if label_count%2==0 else -36)),
+                            ha=('left' if label_count%4<2 else 'right'),
+                            arrowprops=dict(arrowstyle='-',color=line.get_color(),alpha=.5,lw=.6),
+                            textcoords='offset points', fontsize=8, color=line.get_color(),
+                            bbox=dict(facecolor='white',edgecolor='none',alpha=.8),
+                            annotation_clip=False)
+                force_labels.append(label)
+                label_count += 1
         if interactive:
             # An artist's sample index maps to _response(...).sample_sections(points).
             # In particular, duplicate x values encode the two sides of a point force.
             line.set_gid(f'md-member:{element.id}:{key}')
             line.set_picker(7)  # points; matches dense force diagrams at any zoom
         # Dimensionless diagram supports any member orientation.
-    unit = 'N m' if key == 'M' else 'N'
-    ax.set_title(f'{key} diagram (local sign convention; {unit})')
-    ax.text(.01,.01,'Diagram ordinates auto-scaled' if max_force and scale else 'Zero diagram',
-            transform=ax.transAxes,fontsize=8,alpha=.7,va='bottom')
+    from matplotlib import font_manager
+    available = {font.name for font in font_manager.fontManager.ttflist}
+    chinese_font = next((name for name in ('Microsoft YaHei','SimHei','Noto Sans CJK SC')
+                         if name in available), None)
+    font = {'fontfamily': chinese_font} if chinese_font else {}
+    title = (f'{dict(N="轴力", V="剪力", M="弯矩")[key]} {key}（局部正号；{unit}）'
+             if chinese_font else f'{key} diagram (local sign convention; {unit})')
+    ax.set_title(title, **font)
+    mode_name = {'none':'隐藏数值','extrema':'每根杆件的采样最大/最小值','all':'端点与采样极值'}[value_mode if show_values else 'none']
+    note = (f'几何坐标单位 m；内力按比例绘制，精确数值见截面查询\n{mode_name}；比例 {scale:.3g} m/({unit})'
+            if chinese_font else
+            f'Geometry axes: m; force values: labels (ends + sampled extrema)\nDisplay scale: {scale:.3g} m/({unit})')
+    ax.text(.01,.01,note, transform=ax.transAxes,fontsize=8,alpha=.8,va='bottom', **font)
     ax.relim(); ax.autoscale_view()
+    if force_labels:
+        _install_force_label_layout(ax, force_labels)
     return ax
 
 

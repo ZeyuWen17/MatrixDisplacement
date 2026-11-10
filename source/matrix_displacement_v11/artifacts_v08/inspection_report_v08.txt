@@ -1,8 +1,0 @@
-V0.8: 无 Qt 的交互查询示例（SI 单位）
-节点 2:
-  ux: displacement=0, reaction=0, fixed=False
-  uy: displacement=-0.0249242956, reaction=-4.54747351e-13, fixed=False
-  rz: displacement=-0.00822113095, reaction=6.82121026e-13, fixed=False
-杆件 1: x=1.7 m 集中力两侧
-  V(left)=3460 N; V(right)=2760 N
-  M(left)=-3174 N*m; M(right)=-3174 N*m

@@ -1,0 +1,21 @@
+V0.5: two-span continuous beam, equal L=4 m, q=1 kN/m downward
+  Support 1: R_uy=1.500000 kN
+  Support 2: R_uy=5.000000 kN
+  Support 3: R_uy=1.500000 kN
+  Interior support B: M=-2.000000 kN*m
+  Number of global DOFs: 6
+Written files:
+  outputs\examples\artifacts_v05\continuous_beam_model.json
+  outputs\examples\artifacts_v05\deformed.png
+  outputs\examples\artifacts_v05\moment.png
+  outputs\examples\artifacts_v05\shear.png
+  outputs\examples\artifacts_v05\structure.png
+  outputs\examples\artifacts_v05\teaching_report.md
+MatrixDisplacement V1.0 端到端验证
+批量移动：通过；单步撤销/重做：通过
+杆件批量属性更新：通过；批量删除回滚：通过
+JSON 保存/读取：通过；教学/快速结果一致：通过
+节点数：3
+杆件数：2
+最大节点位移绝对值：0.057756079
+注意：此示例没有运行或验证 Qt / Windows EXE。

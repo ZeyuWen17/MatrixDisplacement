@@ -11,7 +11,7 @@ from matrix_displacement.io import save_model_json,load_model_json
 
 
 def main():
-    directory=Path('artifacts_v08')
+    directory=Path('outputs/examples/artifacts_v08')
     directory.mkdir(exist_ok=True)
     editor=ModelEditor()
     editor.load_example('cantilever')

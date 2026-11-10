@@ -13,7 +13,7 @@ from matrix_displacement.io import load_model_json, model_to_dict
 
 
 def main(directory=None):
-    out = Path(directory) if directory else Path(__file__).resolve().parents[1] / 'artifacts_v10'
+    out = Path(directory) if directory else Path(__file__).resolve().parents[1] / 'outputs/examples/artifacts_v10'
     out.mkdir(parents=True, exist_ok=True)
     editor = ModelEditor()
     editor.load_example('cantilever')

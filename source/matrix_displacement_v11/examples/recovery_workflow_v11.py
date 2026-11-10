@@ -8,7 +8,7 @@ from matrix_displacement.io import save_model_json, load_model_json, model_to_di
 from matrix_displacement.recovery import RecoveryStore
 
 
-def run(output_dir=Path('artifacts_v11')):
+def run(output_dir=Path('outputs/examples/artifacts_v11')):
     output_dir=Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     checkpoints=output_dir / 'recovery'

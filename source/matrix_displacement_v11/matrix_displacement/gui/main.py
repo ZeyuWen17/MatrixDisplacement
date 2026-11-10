@@ -10,7 +10,7 @@ from pathlib import Path
 from matrix_displacement import __version__
 
 from PySide6.QtCore import Qt, QRect, QRectF, QLineF, QPointF, Signal, QTimer
-from PySide6.QtGui import QAction, QColor, QPen, QBrush, QPainter, QPolygonF, QFont
+from PySide6.QtGui import QAction, QColor, QPen, QBrush, QPainter, QPolygonF, QFont, QFontDatabase
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QGraphicsView, QGraphicsScene,
     QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox, QSplitter, QTabWidget,
@@ -474,8 +474,15 @@ class ModelCanvas(QGraphicsView):
             add_label(f'{nid}', '#0f172a', 1.0, p.x(), p.y(), 8, 5)
             fixed=[d for d in ('ux','uy','rz') if (nid,d) in model.constraints]
             if fixed:
-                tri=QPolygonF([QPointF(p.x()-9,p.y()+15),QPointF(p.x()+9,p.y()+15),QPointF(p.x(),p.y()+3)])
-                sc.addPolygon(tri,QPen(QColor('#475569'),1.4),QBrush(QColor('#e2e8f0')))
+                if set(fixed)=={'ux','uy','rz'}:
+                    pen=QPen(QColor('#475569'),1.4)
+                    wall=sc.addLine(p.x()-7,p.y()-15,p.x()-7,p.y()+15,pen)
+                    wall.setToolTip('固定支座：ux / uy / rz')
+                    for offset in range(-15,16,6):
+                        sc.addLine(p.x()-7,p.y()+offset,p.x()-14,p.y()+offset+5,pen)
+                else:
+                    tri=QPolygonF([QPointF(p.x()-9,p.y()+15),QPointF(p.x()+9,p.y()+15),QPointF(p.x(),p.y()+3)])
+                    sc.addPolygon(tri,QPen(QColor('#475569'),1.4),QBrush(QColor('#e2e8f0')))
                 add_label('/'.join(fixed), '#475569', .75, p.x(), p.y(), -9, 13)
             fx,fy,mz=(model.loads.get((nid,d),0.) for d in ('ux','uy','rz'))
             for value,vx,vy,name in ((fx,1,0,'Fx'),(fy,0,-1,'Fy')):
@@ -759,6 +766,29 @@ class MainWindow(QMainWindow):
         splitter.setSizes([295,1050])
         self._reset_results()
         self._update_history_actions()
+
+        labels_bar=self.addToolBar('内力图标注')
+        labels_bar.addWidget(QLabel('内力图数值：'))
+        self.force_labels=QComboBox()
+        for label,value in (('隐藏数值','none'),('仅采样极值','extrema'),('端点与采样极值','all')):
+            self.force_labels.addItem(label,value)
+        self.force_labels.setCurrentIndex(2)
+        labels_bar.addWidget(self.force_labels)
+        self.force_labels.currentIndexChanged.connect(self._refresh_force_labels)
+
+    def _refresh_force_labels(self, *args):
+        if self.result is None:
+            return
+        for title,component in (('轴力 N','N'),('剪力 V','V'),('弯矩 M','M')):
+            figure=self.figures.get(title)
+            if figure is None:
+                continue
+            figure.clear()
+            plot_force_diagram(self.editor.model,self.result,component,
+                               ax=figure.add_subplot(111),interactive=True,
+                               value_mode=self.force_labels.currentData())
+            figure.tight_layout()
+            figure.canvas.draw_idle()
 
     def _update_history_actions(self):
         self.undo_action.setEnabled(self.history.can_undo)
@@ -1097,6 +1127,7 @@ class MainWindow(QMainWindow):
             self.result_tabs.removeTab(0)
             old_page.deleteLater()
         self.summary=QPlainTextEdit()
+        self.summary.setFont(QFontDatabase.systemFont(QFontDatabase.SystemFont.FixedFont))
         self.summary.setReadOnly(True)
         self.summary.setPlainText('模型尚未计算，或已修改。请点击“计算并显示结果”。')
         self.result_tabs.addTab(self.summary,'数值结果')
@@ -1553,6 +1584,7 @@ class MainWindow(QMainWindow):
                 canvas.mpl_connect('pick_event',self._on_diagram_pick)
             self.result_tabs.addTab(canvas,title)
             self.figures[title]=figure
+        self._refresh_force_labels()
 
     def _on_diagram_pick(self,event):
         """Query a picked Matplotlib force trace at its actual sample station."""
@@ -1744,6 +1776,20 @@ def main(argv=None):
                 app.processEvents()
                 if window.result is None or len(window.figures) != 4:
                     raise RuntimeError('Qt self-test did not render the four analysis figures')
+                solved=window.result
+                for mode in ('none','extrema','all'):
+                    window.force_labels.setCurrentIndex(window.force_labels.findData(mode))
+                    app.processEvents()
+                    if window.result is not solved:
+                        raise RuntimeError('Label mode changed the analysis result')
+                    figure=window.figures['弯矩 M']
+                    labels=[t for t in figure.axes[0].texts if t.get_text().startswith('E')]
+                    if bool(labels)!=(mode!='none'):
+                        raise RuntimeError('Label mode did not update the diagram')
+                    image_path=Path(folder)/f'moment_{mode}.png'
+                    figure.savefig(image_path,dpi=160,bbox_inches='tight')
+                    if image_path.stat().st_size==0:
+                        raise RuntimeError('Diagram export produced an empty file')
                 window.history.execute(window.editor.add_node,7.0,2.0)
                 window._modified()
                 window._autosave_if_dirty()

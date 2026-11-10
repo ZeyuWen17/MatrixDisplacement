@@ -39,6 +39,26 @@ def test_empty_member_unloaded_sections_zero():
         assert (d.ux_local,d.uy_local,d.rz)==pytest.approx((0.,0.,0.))
 
 
+def test_force_labels_use_physical_values_and_can_be_hidden():
+    import matplotlib.pyplot as plt
+    m=beam()
+    m.add_load(2,'uy',-1000)
+    result,_=solve(m)
+    ax=plot_force_diagram(m,result,'M',scale=0)
+    try:
+        labels=[t.get_text() for t in ax.texts if t.get_text().startswith('E1 ')]
+        assert len(labels)==2
+        assert any('M=-4000 N·m' in t for t in labels)
+        assert any('M=0 N·m' in t for t in labels)
+    finally:
+        plt.close(ax.figure)
+    ax=plot_force_diagram(m,result,'M',show_values=False)
+    try:
+        assert not any(t.get_text().startswith('E1 ') for t in ax.texts)
+    finally:
+        plt.close(ax.figure)
+
+
 def test_cantilever_node_force_shear_moment_and_displacement():
     m=beam()
     P=1000

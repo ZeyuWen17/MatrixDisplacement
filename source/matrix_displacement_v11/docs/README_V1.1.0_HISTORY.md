@@ -84,7 +84,7 @@ python -m pytest -q
 python -m examples.recovery_workflow_v11
 ```
 
-恢复演示生成 `artifacts_v11/original_model.json`、`artifacts_v11/recovery/session-....json`、`artifacts_v11/restored_model.json` 及 `recovery_demo.txt`。可以检查原模型不会因为恢复草稿而被覆盖。
+恢复演示生成 `outputs/examples/artifacts_v11/original_model.json`、`outputs/examples/artifacts_v11/recovery/session-....json`、`outputs/examples/artifacts_v11/restored_model.json` 及 `recovery_demo.txt`。可以检查原模型不会因为恢复草稿而被覆盖。
 
 当前实际环境结果：**`259 passed, 5 skipped`**。5 个跳过模块为 V0.7、V0.8、V0.9、V1.0 和 V1.1 的 GUI smoke tests，原因是本环境没有 PySide6。对于 Qt 的正确性，这些跳过**不是通过**。
 
@@ -114,7 +114,7 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build_exe_windows.ps1
 
 若脚本成功，预计文件路径：
 
-`dist\MatrixDisplacement\MatrixDisplacement.exe`
+`outputs\dist\MatrixDisplacement\MatrixDisplacement.exe`
 
 **当前提供的是构建脚本，不是已实际生成并验证的 Windows EXE。** PyInstaller 使用 `--onedir`，分发时需携带**完整目录**。脚本会验证打包后 EXE 的离屏 `--self-test` 退出码并记录 SHA-256，但不代替真实 UI 人工验收。`-SkipTests` 仅跳过源码阶段测试，**不会绕过打包后的 EXE 自检**。
 

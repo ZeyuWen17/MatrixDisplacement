@@ -78,7 +78,7 @@ python -m pip install -r requirements.txt
 python -m examples.inspection_workflow_v08
 ```
 
-会生成 `artifacts_v08/structure_v08.json` 和 `artifacts_v08/inspection_report_v08.txt`，展示模型操作历史、节点位移与杆件受荷截面查询。
+会生成 `outputs/examples/artifacts_v08/structure_v08.json` 和 `outputs/examples/artifacts_v08/inspection_report_v08.txt`，展示模型操作历史、节点位移与杆件受荷截面查询。
 
 ## 4. 图形界面使用说明
 
@@ -136,7 +136,7 @@ matrix_displacement_v08/
 │   ├── README_V0.6.md
 │   ├── README_V0.7.md
 │   └── V0.8_WINDOWS_GUI_CHECKLIST.md
-├── artifacts_v08/              # V0.8 非 Qt 示范输出
+├── outputs/examples/artifacts_v08/              # V0.8 非 Qt 示范输出
 ├── requirements.txt
 ├── requirements-gui.txt
 ├── install_gui_windows.bat

@@ -29,7 +29,7 @@ def main():
         f'V jump={right.V-left.V:.6g} N, left M={left.M:.6g} N*m, right M={right.M:.6g} N*m',
         'No claim of Windows GUI validation is made by this example.',
     ]
-    folder = Path('artifacts_v09')
+    folder = Path('outputs/examples/artifacts_v09')
     folder.mkdir(exist_ok=True)
     (folder/'interaction_validation.txt').write_text('\n'.join(lines)+'\n',encoding='utf-8')
     print('\n'.join(lines))
