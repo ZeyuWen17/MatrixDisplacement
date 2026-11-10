@@ -1,0 +1,6 @@
+V0.9 UI interaction math workflow (without Qt)
+Member dimension: L=4 m  θ=0.0°
+Projected station x=1.7000 m; lateral distance=0.5000 m
+Point force at x=1.7000 m, left V=3460 N, right V=2760 N
+V jump=-700 N, left M=-3174 N*m, right M=-3174 N*m
+No claim of Windows GUI validation is made by this example.

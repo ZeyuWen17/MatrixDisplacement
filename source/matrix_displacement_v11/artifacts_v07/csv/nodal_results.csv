@@ -1,0 +1,7 @@
+﻿global_dof,node_id,dof,status,displacement_unit,displacement,reaction_unit,reaction
+0,1,uy,prescribed,m,0.0,N,1500.0
+1,1,rz,free,rad,-0.0007936507936507937,N*m,0.0
+2,2,uy,prescribed,m,0.0,N,5000.0
+3,2,rz,free,rad,-5.136197589688065e-20,N*m,-2.2737367544323206e-13
+4,3,uy,prescribed,m,0.0,N,1500.0
+5,3,rz,free,rad,0.0007936507936507937,N*m,0.0
