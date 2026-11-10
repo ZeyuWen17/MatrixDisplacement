@@ -1,0 +1,7 @@
+﻿element_id,element_type,component,unit,value
+1,Frame2D,Fx_i,N,0.0
+1,Frame2D,Fy_i,N,5500.0
+1,Frame2D,M_i,N*m,10790.000000000002
+1,Frame2D,Fx_j,N,0.0
+1,Frame2D,Fy_j,N,-4.547473508864641e-13
+1,Frame2D,M_j,N*m,6.821210263296962e-13

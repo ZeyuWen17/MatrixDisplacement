@@ -15,16 +15,16 @@
 
 ### 最新源码修改（2026-11-09）
 
-- 内力标签新增按实际文字尺寸的自动避让，在窗口缩放和导出时重新排布，保留引线与全部标签。两跨两层、10 根杆件刚架通过两种图幅的文字框无重叠检查及重复绘制稳定性测试；[验收图](source/matrix_displacement_v11/outputs/acceptance/2026-11-09/dense_frame_labels.png)已视觉核对。
+- 内力标签新增按实际文字尺寸的自动避让，在窗口缩放和导出时重新排布，保留引线与全部标签。两跨两层、10 根杆件刚架通过两种图幅的文字框无重叠检查及重复绘制稳定性测试；[验收图](source/matrix_displacement_v11/docs/assets/acceptance-2026-11-09/dense_frame_labels.png)已视觉核对。
 - 最新完整回归：292 passed、1 skipped。避让优先减少标签与标签、节点编号和说明文字的重叠；不保证所有密集模型完全无重叠，也不保证引线与结构线互不交叉。
 
 - 顶部新增“内力图数值”下拉框：隐藏数值、仅采样极值、端点与采样极值。计算后切换即可刷新 N/V/M 三张图，不重新求解，也不修改模型；导出 PNG 使用当前模式。
 - “仅采样极值”显示每根杆件的采样最大值和最小值；多根杆件的局部 x 均从各自 i 端起算。密集模型建议先选择该模式，必要时隐藏数值并用截面查询。
-- 标签保留引线。已验证连续梁、三角桁架三种模式切换与图片输出，连续梁早期交错排布示例见[标注图](source/matrix_displacement_v11/outputs/acceptance/2026-11-09/continuous_labels.png)；最新刚架避让效果见上方验收图。
+- 标签保留引线。已验证连续梁、三角桁架三种模式切换与图片输出，连续梁早期交错排布示例见[标注图](source/matrix_displacement_v11/docs/assets/acceptance-2026-11-09/continuous_labels.png)；最新刚架避让效果见上方验收图。
 - 本轮原有全量回归 289 passed、1 skipped；新增两项 Qt 模式切换和导出测试 2 passed。上述功能已合入 V1.1.5 EXE。
 
 - 内力图增加杆件端点、采样最大/最小值标注（杆件编号、沿杆件局部 x、实际内力及单位）。极值来自采样，不是解析极值；精确位置请结合截面查询。
-- 图底部说明几何坐标单位及内力显示比例；有微软雅黑、黑体或 Noto Sans CJK SC 时使用中文标题和说明，否则回退英文。示例见[带数值标注的弯矩图](source/matrix_displacement_v11/outputs/acceptance/2026-11-09/moment_labeled.png)。
+- 图底部说明几何坐标单位及内力显示比例；有微软雅黑、黑体或 Noto Sans CJK SC 时使用中文标题和说明，否则回退英文。示例见[带数值标注的弯矩图](source/matrix_displacement_v11/docs/assets/acceptance-2026-11-09/moment_labeled.png)。
 - 本次绘图修改验证：原有完整回归 288 passed、1 skipped；新增标注测试单独运行 1 passed。请关闭旧版本后启动 V1.1.5 程序。
 
 - 固定支座（同时约束 ux、uy、rz）改为固定端斜线符号，保留自由度文字标注。
@@ -37,7 +37,7 @@
 - [任务单与详细说明](source/matrix_displacement_v11/任务单.md)
 - [更新记录](source/matrix_displacement_v11/CHANGELOG.md)
 - [V1.1.5 验证记录](source/matrix_displacement_v11/docs/V1.1.5_VALIDATION.md)
-- [Windows 程序](source/matrix_displacement_v11/outputs/dist/V1.1.5/MatrixDisplacement/MatrixDisplacement.exe)
+- [历史 Windows 程序下载（最高 V1.1.4）](https://github.com/ZeyuWen17/MatrixDisplacement/releases/tag/v1.1.4)
 
 后续直接修改文件、验证并更新 README，只有明确要求时才打包。
 
@@ -47,7 +47,19 @@
 
 ### 1. 打开程序
 
-**方式一：直接运行 Windows 程序。** 打开下面的文件夹，双击 `MatrixDisplacement.exe`：
+**从 GitHub 首次下载：** 本仓库为私有仓库，需要登录有访问权限的 GitHub 账号。可在仓库首页选择 Code → Download ZIP 并解压，或使用 Git 克隆仓库。GitHub 上的 V1.1.5 只有源码，没有 Windows 安装包；本机已有的 V1.1.5 EXE 不包含在源码下载中。需要历史免安装程序时，下载上方 V1.1.4 Release 的 Windows ZIP，解压整个目录后运行。
+
+首次运行 V1.1.5 源码，在 Windows 安装 Python 3.12（本项目验证版本为 3.12.5），进入下载目录中的 `source/matrix_displacement_v11`，在 PowerShell 执行：
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-gui.txt
+.\.venv\Scripts\python.exe -m matrix_displacement.gui
+```
+
+安装依赖需要联网。后续启动只执行最后一行；无需激活虚拟环境。若提示找不到 Python，请先安装 Python 3.12，再重新打开 PowerShell。
+
+**方式一：使用本机已构建的 Windows 程序。** 以下路径仅适用于开发电脑已有文件，不是 GitHub 下载入口。打开文件夹，双击 `MatrixDisplacement.exe`：
 
 ```text
 source/matrix_displacement_v11/outputs/dist/V1.1.5/MatrixDisplacement/
@@ -73,7 +85,7 @@ EXE 旁的 `_internal` 文件夹是运行所需依赖，不能删除，也不能
 4. 右侧切换到“计算结果”，依次查看“数值结果”“杆件截面查询”“轴力 N”“剪力 V”“弯矩 M”“变形图”。
 5. 如需返回结构图，点击“建模画布”。
 
-默认悬臂梁算例的支座竖向反力应为 **5500 N**，支座反力矩为 **10790 N·m**，自由端竖向位移约为 **−0.0249248 m**。这些数值仅适用于未修改的默认算例。
+默认悬臂梁算例的支座竖向反力应为 **5500 N**，支座反力矩为 **10790 N·m**，自由端竖向位移约为 **−0.0249243 m**。这些数值仅适用于未修改的默认算例。
 
 **界面分区：** 顶部是文件菜单、模式选择和计算入口；左侧是建模工具、属性表、荷载表及导出按钮，内容较长时可向下滚动；右侧是建模画布和计算结果；底部状态栏显示操作反馈及异常提示。
 
@@ -194,6 +206,8 @@ EXE 旁的 `_internal` 文件夹是运行所需依赖，不能删除，也不能
 
 ## 当前目录
 
+下面列出开发电脑的目录。GitHub 源码不含 `.venv`、`outputs`、本地恢复草稿及历史 ZIP；文档示例图片位于 `docs/assets`。
+
 ```text
 结构力学/
 ├── README.md
@@ -219,5 +233,24 @@ EXE 旁的 `_internal` 文件夹是运行所需依赖，不能删除，也不能
 
 在源码目录运行 `.\.venv\Scripts\python.exe -m matrix_displacement.gui` 可启动源码版。打包程序必须保留其完整目录和 `_internal`。
 
-本次未删除文件、未新增压缩包，也未改变数值算法。目录名保留 `matrix_displacement_v11` 以维持虚拟环境路径；实际包版本为 1.1.5。完整真实交互、高 DPI、多显示器及跨电脑验收仍待完成。
+目录名保留 `matrix_displacement_v11` 以维持虚拟环境路径；实际包版本为 1.1.5。高 DPI、多显示器及跨电脑验收仍待完成。
+
+## 示例效果
+
+下图是两跨两层刚架的弯矩图，标注显示实际弯矩，几何坐标单位为 m。
+
+![刚架弯矩标注效果](source/matrix_displacement_v11/docs/assets/acceptance-2026-11-09/dense_frame_labels.png)
+
+## 后续同步方式
+
+当前开发目录与上传用 Git 工作副本是两个目录，修改不会自动同步。
+
+1. 在开发目录修改源码或文档，完成对应验证。
+2. 在上传工作副本先检查 `git status --short`，处理已有修改，然后执行 `git pull --ff-only`；失败时停止，不覆盖远端内容。
+3. 将本次明确修改的文件按相同相对路径复制到工作副本。README 的图片放入 `docs/assets`；不要复制 `.venv`、`outputs` 或缓存。
+4. 使用 `git diff --stat` 和 `git diff` 核对范围，用 `git add -- 文件路径` 只暂存本次文件，然后提交并执行 `git push origin main`。
+5. 核对远端提交和文档链接。日常修订更新 main，不移动已发布版本标签；只有发布新版本时才新增标签和 Release。
+
+如果是直接从 GitHub 克隆的开发目录，可在该克隆内开发和推送，无需再维护第二份工作副本。
+
 

@@ -12,15 +12,16 @@
 
 ## 验收产物
 
-- [教学报告](../outputs/acceptance/2026-11-09/teaching_report.md)
-- [节点结果](../outputs/acceptance/2026-11-09/csv_results/nodal_results.csv)
-- [杆端力](../outputs/acceptance/2026-11-09/csv_results/element_end_forces.csv)
-- [截面内力](../outputs/acceptance/2026-11-09/csv_results/section_forces.csv)
-- [变形数据](../outputs/acceptance/2026-11-09/csv_results/deformations.csv)
-- [弯矩图](../outputs/acceptance/2026-11-09/moment.png)
+- [教学报告](assets/acceptance-2026-11-09/teaching_report.md)
+- [节点结果](assets/acceptance-2026-11-09/csv_results/nodal_results.csv)
+- [杆端力](assets/acceptance-2026-11-09/csv_results/element_end_forces.csv)
+- [截面内力](assets/acceptance-2026-11-09/csv_results/section_forces.csv)
+- [变形数据](assets/acceptance-2026-11-09/csv_results/deformations.csv)
+- [弯矩图](assets/acceptance-2026-11-09/moment.png)
 
 弯矩图叠加在结构几何坐标上并自动缩放；不能将纵轴的 m 当作弯矩读数，精确弯矩读取截面查询或 CSV 的 M_Nm 列。
 
 ## 范围与后续
 
 本轮基础流程通过；未覆盖全部结构类型、多显示器和 DPI 组合。上轮源码完整自动回归为 288 passed、1 skipped，本轮未修改计算源码。下一步可完善内力图的关键值标注和中文说明，提高初学者读图体验。
+
