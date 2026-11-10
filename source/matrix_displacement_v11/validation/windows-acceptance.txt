@@ -1,0 +1,32 @@
+........................................................................ [ 26%]
+........................................................................ [ 53%]
+.............................................................s.......... [ 79%]
+.......................................................                  [100%]
+270 passed, 1 skipped in 4.95s
+..                                                                       [100%]
+2 passed in 0.75s
+Could not save font_manager cache [Errno 13] Permission denied: 'C:\\Users\\lenovo\\.matplotlib\\fontlist-v3.11.0.json.matplotlib-lock'
+MatrixDisplacement V1.0 �˵�����֤
+�����ƶ���ͨ������������/������ͨ��
+�˼��������Ը��£�ͨ��������ɾ���ع���ͨ��
+JSON ����/��ȡ��ͨ������ѧ/���ٽ��һ�£�ͨ��
+�ڵ�����3
+�˼�����2
+���ڵ�λ�ƾ���ֵ��0.057756079
+ע�⣺��ʾ��û�����л���֤ Qt / Windows EXE��
+Could not save font_manager cache [Errno 13] Permission denied: 'C:\\Users\\lenovo\\.matplotlib\\fontlist-v3.11.0.json.matplotlib-lock'
+V0.5: two-span continuous beam, equal L=4 m, q=1 kN/m downward
+  Support 1: R_uy=1.500000 kN
+  Support 2: R_uy=5.000000 kN
+  Support 3: R_uy=1.500000 kN
+  Interior support B: M=-2.000000 kN*m
+  Number of global DOFs: 6
+Written files:
+  artifacts_v05\continuous_beam_model.json
+  artifacts_v05\deformed.png
+  artifacts_v05\moment.png
+  artifacts_v05\shear.png
+  artifacts_v05\structure.png
+  artifacts_v05\teaching_report.md
+自动测试完成；真实鼠标、DPI、崩溃恢复、分发仍须人工检查。
+请参照 docs/V1.1_WINDOWS_ACCEPTANCE.md。

@@ -7,6 +7,7 @@ embedded Matplotlib figures. All numerical inputs are SI units.
 import math
 import sys
 from pathlib import Path
+from matrix_displacement import __version__
 
 from PySide6.QtCore import Qt, QRect, QRectF, QLineF, QPointF, Signal, QTimer
 from PySide6.QtGui import QAction, QColor, QPen, QBrush, QPainter, QPolygonF, QFont
@@ -617,7 +618,7 @@ class MainWindow(QMainWindow):
         controls.setMaximumWidth(320)
         cbox=QVBoxLayout(controls)
         cbox.setContentsMargins(8,8,8,8)
-        heading=QLabel('矩阵位移法 · V1.1')
+        heading=QLabel(f'矩阵位移法 · V{__version__}')
         heading.setStyleSheet('font-size:17px;font-weight:600;')
         cbox.addWidget(heading)
         cbox.addWidget(QLabel('二维结构建模与教学静力分析 · 自动保存与崩溃恢复'))
@@ -1093,7 +1094,7 @@ class MainWindow(QMainWindow):
 
     def _update_title(self):
         label=str(self.file_path.name) if self.file_path else '未命名模型'
-        self.setWindowTitle(f'矩阵位移法教学系统 V1.1 — {label}{" *" if self.unsaved else ""}')
+        self.setWindowTitle(f'矩阵位移法教学系统 V{__version__} — {label}{" *" if self.unsaved else ""}')
 
     def _error(self,exc):
         explanation = explain_error(exc)

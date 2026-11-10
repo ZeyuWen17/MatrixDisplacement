@@ -1,8 +1,9 @@
-# V1.1 Windows-only reproducible onedir build with packaged GUI+solver self-test.
+﻿# V1.1 Windows-only reproducible onedir build with packaged GUI+solver self-test.
 # powershell -ExecutionPolicy Bypass -File .\scripts\build_exe_windows.ps1
-param([switch]$SkipTests)
+param([switch]$SkipTests, [switch]$SkipDependencyInstall)
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+$previousPath = $env:PATH
 Push-Location $root
 try {
     if ($env:OS -ne 'Windows_NT') { throw '此脚本必须在 Windows 上执行。' }
@@ -11,8 +12,10 @@ try {
         py -3 -m venv .venv
         if ($LASTEXITCODE -ne 0) { throw '创建 Python 虚拟环境失败。' }
     }
-    & $python -m pip install -r requirements-build-windows.txt
-    if ($LASTEXITCODE -ne 0) { throw '安装构建依赖失败。' }
+    if (-not $SkipDependencyInstall) {
+        & $python -m pip install -r requirements-build-windows.txt
+        if ($LASTEXITCODE -ne 0) { throw '安装构建依赖失败。' }
+    }
     & $python -c 'import PySide6; from PySide6.QtWidgets import QApplication'
     if ($LASTEXITCODE -ne 0) { throw 'PySide6 无法导入。' }
     $previousQt = $env:QT_QPA_PLATFORM
@@ -26,11 +29,11 @@ try {
             & $python -m matrix_displacement.gui --self-test
             if ($LASTEXITCODE -ne 0) { throw '源码 Qt/求解器/自动保存自检失败。' }
         }
+        # Prevent unrelated tools on PATH from supplying incompatible Qt dependencies (e.g. ICU).
+        $env:PATH = "$(Join-Path $root '.venv\Scripts');$env:SystemRoot\System32;$env:SystemRoot"
         & $python -m PyInstaller --noconfirm --clean --windowed --onedir `
             --name MatrixDisplacement `
             --paths $root `
-            --collect-all PySide6 `
-            --collect-all matplotlib `
             --hidden-import matplotlib.backends.backend_qtagg `
             scripts/gui_launcher.py
         if ($LASTEXITCODE -ne 0) { throw 'PyInstaller 构建失败。' }
@@ -38,7 +41,12 @@ try {
         if (-not (Test-Path $exe)) { throw "未找到生成的 EXE：$exe" }
         # Even -SkipTests must not bypass packaged EXE execution verification.
         # Start-Process -Wait is needed because --windowed exe is a GUI subsystem binary.
-        $process = Start-Process -FilePath $exe -ArgumentList '--self-test' -Wait -PassThru
+        $process = Start-Process -FilePath $exe -ArgumentList '--self-test' -WindowStyle Hidden -PassThru
+        if (-not $process.WaitForExit(120000)) {
+            $process.Kill()
+            throw '打包后的 EXE 自检超过 120 秒，已终止本次自检进程。'
+        }
+        $process.Refresh()
         if ($process.ExitCode -ne 0) {
             throw "打包后的 EXE 离屏自检失败，退出代码 $($process.ExitCode)。请检查用户本地 GUI 错误日志。"
         }
@@ -58,4 +66,4 @@ try {
     }
     finally { $env:QT_QPA_PLATFORM = $previousQt }
 }
-finally { Pop-Location }
+finally { $env:PATH = $previousPath; Pop-Location }

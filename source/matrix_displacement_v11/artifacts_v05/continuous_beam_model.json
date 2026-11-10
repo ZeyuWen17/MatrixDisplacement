@@ -1,0 +1,86 @@
+{
+  "constraints": [
+    {
+      "dof": "uy",
+      "node_id": 1,
+      "value": 0.0
+    },
+    {
+      "dof": "uy",
+      "node_id": 2,
+      "value": 0.0
+    },
+    {
+      "dof": "uy",
+      "node_id": 3,
+      "value": 0.0
+    }
+  ],
+  "elements": [
+    {
+      "id": 1,
+      "material_id": 1,
+      "node_i": 1,
+      "node_j": 2,
+      "section_id": 1,
+      "type": "Beam2D"
+    },
+    {
+      "id": 2,
+      "material_id": 1,
+      "node_i": 2,
+      "node_j": 3,
+      "section_id": 1,
+      "type": "Beam2D"
+    }
+  ],
+  "materials": [
+    {
+      "E": 210000000000.0,
+      "id": 1
+    }
+  ],
+  "member_loads": [
+    {
+      "element_id": 1,
+      "qx": 0.0,
+      "qy": -1000.0,
+      "system": "local",
+      "type": "UniformLoad2D"
+    },
+    {
+      "element_id": 2,
+      "qx": 0.0,
+      "qy": -1000.0,
+      "system": "local",
+      "type": "UniformLoad2D"
+    }
+  ],
+  "nodal_loads": [],
+  "nodes": [
+    {
+      "id": 1,
+      "x": 0.0,
+      "y": 0.0
+    },
+    {
+      "id": 2,
+      "x": 4.0,
+      "y": 0.0
+    },
+    {
+      "id": 3,
+      "x": 8.0,
+      "y": 0.0
+    }
+  ],
+  "schema_version": 2,
+  "sections": [
+    {
+      "A": 0.012,
+      "I": 8e-06,
+      "id": 1
+    }
+  ],
+  "units": "SI"
+}

@@ -1,4 +1,4 @@
-# MatrixDisplacement v1.1
+# MatrixDisplacement v1.1.1
 
 结构力学矩阵位移法教学程序。
 

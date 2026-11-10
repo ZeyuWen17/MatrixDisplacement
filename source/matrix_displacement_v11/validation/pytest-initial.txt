@@ -1,0 +1,14 @@
+.....................................................................F.. [ 26%]
+........................................................................ [ 53%]
+.............................................................s.......... [ 79%]
+.......................................................                  [100%]
+================================== FAILURES ===================================
+____________________ test_version_and_auto_label_placement ____________________
+tests\test_gui_smoke_v10.py:58: in test_version_and_auto_label_placement
+    assert 'V1.0' in w.windowTitle()
+E   AssertionError: assert 'V1.0' in '����λ�Ʒ���ѧϵͳ V1.1 �� δ����ģ��'
+E    +  where '����λ�Ʒ���ѧϵͳ V1.1 �� δ����ģ��' = <built-in method windowTitle of MainWindow object at 0x0000022106C2F140>()
+E    +    where <built-in method windowTitle of MainWindow object at 0x0000022106C2F140> = <matrix_displacement.gui.main.MainWindow(0x221085b40e0) at 0x0000022106C2F140>.windowTitle
+=========================== short test summary info ===========================
+FAILED tests/test_gui_smoke_v10.py::test_version_and_auto_label_placement - A...
+1 failed, 269 passed, 1 skipped in 14.16s

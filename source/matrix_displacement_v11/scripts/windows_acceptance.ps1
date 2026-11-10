@@ -1,4 +1,4 @@
-# V1.1 Windows source GUI+recovery automatic acceptance; manual checks still mandatory.
+﻿# V1.1 Windows source GUI+recovery automatic acceptance; manual checks still mandatory.
 $ErrorActionPreference = 'Stop'
 $root=(Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Push-Location $root
@@ -6,7 +6,7 @@ try {
     if ($env:OS -ne 'Windows_NT') { throw '该脚本仅用于 Windows 实机验收。' }
     $python=Join-Path $root '.venv\Scripts\python.exe'
     if (-not (Test-Path $python)) { throw '未发现 .venv，请先安装 requirements-gui.txt。' }
-    & $python -c 'import PySide6; from PySide6.QtWidgets import QApplication; print("Qt import OK")'
+    & $python -c 'import PySide6; from PySide6.QtWidgets import QApplication'
     if ($LASTEXITCODE -ne 0) { throw 'PySide6 导入失败。' }
     & $python -m compileall -q matrix_displacement examples tests
     if ($LASTEXITCODE -ne 0) { throw 'Python 语法检查失败。' }

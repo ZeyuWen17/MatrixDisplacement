@@ -1,0 +1,123 @@
+........................................................................ [ 26%]
+........................................................................ [ 53%]
+.............................................................s.......... [ 79%]
+.......................................................                  [100%]
+270 passed, 1 skipped in 4.06s
+..                                                                       [100%]
+2 passed in 0.71s
+325 INFO: PyInstaller: 6.22.3, contrib hooks: 2026.9
+325 INFO: Python: 3.12.5
+396 INFO: Platform: Windows-11-10.0.26200-SP0
+396 INFO: Python environment: C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\.venv
+397 INFO: wrote C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\MatrixDisplacement.spec
+401 INFO: Removing temporary files and cleaning cache in C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\validation\pyinstaller-cache\pyinstaller
+418 INFO: Module search paths (PYTHONPATH):
+['C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11',
+ 'C:\\Users\\lenovo\\AppData\\Local\\Programs\\Python\\Python312\\python312.zip',
+ 'C:\\Users\\lenovo\\AppData\\Local\\Programs\\Python\\Python312\\DLLs',
+ 'C:\\Users\\lenovo\\AppData\\Local\\Programs\\Python\\Python312\\Lib',
+ 'C:\\Users\\lenovo\\AppData\\Local\\Programs\\Python\\Python312',
+ 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv',
+ 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages',
+ 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\scripts',
+ 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11']
+1315 INFO: checking Analysis
+1315 INFO: Building Analysis because Analysis-00.toc is non existent
+1315 INFO: Looking for Python shared library...
+1315 INFO: Using Python shared library: C:\Users\lenovo\AppData\Local\Programs\Python\Python312\python312.dll
+1315 INFO: Running Analysis Analysis-00.toc
+1315 INFO: Target bytecode optimization level: 0
+1315 INFO: Initializing module dependency graph...
+1319 INFO: Initializing module graph hook caches...
+1338 INFO: Analyzing modules for base_library.zip ...
+3642 INFO: Processing standard module hook 'hook-encodings.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+4619 INFO: Processing standard module hook 'hook-math.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+5268 INFO: Processing standard module hook 'hook-pickle.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+5882 INFO: Processing standard module hook 'hook-heapq.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+6250 INFO: Caching module dependency graph...
+6278 INFO: Analyzing C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\scripts\gui_launcher.py
+6309 INFO: Processing standard module hook 'hook-numpy.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+6620 INFO: Processing pre-safe-import-module hook 'hook-typing_extensions.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+6625 INFO: SetuptoolsInfo: initializing cached setuptools info...
+8199 INFO: Processing standard module hook 'hook-platform.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+8299 INFO: Processing standard module hook 'hook-sysconfig.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+8471 INFO: Processing standard module hook 'hook-webbrowser.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+8868 INFO: Processing standard module hook 'hook-_ctypes.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+9200 INFO: Processing standard module hook 'hook-difflib.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+9352 INFO: Processing standard module hook 'hook-multiprocessing.util.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+9416 INFO: Processing standard module hook 'hook-xml.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+10298 INFO: Processing standard module hook 'hook-matplotlib.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+10988 INFO: Processing pre-safe-import-module hook 'hook-packaging.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+11216 INFO: Processing standard module hook 'hook-matplotlib.backend_bases.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+11310 INFO: Processing standard module hook 'hook-PIL.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+11376 INFO: Processing standard module hook 'hook-PIL.Image.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+12238 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+12348 INFO: Processing standard module hook 'hook-PIL.ImageFilter.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+12862 INFO: Processing standard module hook 'hook-matplotlib.backends.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+12918 INFO: Processing standard module hook 'hook-matplotlib.pyplot.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+13008 INFO: Processing standard module hook 'hook-matplotlib.figure.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+13432 INFO: Processing standard module hook 'hook-dateutil.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+13484 INFO: Processing standard module hook 'hook-zoneinfo.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+14514 INFO: Processing pre-safe-import-module hook 'hook-gi.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+14678 INFO: Processing standard module hook 'hook-PySide6.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+15143 INFO: Processing standard module hook 'hook-shiboken6.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+15234 INFO: Processing standard module hook 'hook-PySide6.QtNetwork.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+17386 INFO: Processing standard module hook 'hook-PySide6.QtCore.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+19825 INFO: Processing standard module hook 'hook-PySide6.QtGui.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+30048 INFO: Processing standard module hook 'hook-PySide6.QtWidgets.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+32167 INFO: Processing standard module hook 'hook-matplotlib.backends.backend_qtagg.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+32175 INFO: Processing standard module hook 'hook-matplotlib.backends.qt_compat.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+32177 INFO: hook-matplotlib.backends.qt_compat: selected 'PySide6' as Qt bindings because hook for 'PySide6' has been run before.
+32183 INFO: Processing standard module hook 'hook-PySide6.QtSvg.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+32723 INFO: Processing module hooks (post-graph stage)...
+32733 INFO: Processing standard module hook 'hook-matplotlib.backends.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+32734 INFO: Matplotlib backend selection method: automatic discovery of used backends
+33450 INFO: Trying determine the default backend as first importable candidate from the list: ['QtAgg', 'Qt5Agg', 'Gtk4Agg', 'Gtk3Agg', 'TkAgg', 'WxAgg']
+35330 INFO: Selected matplotlib backends: ['QtAgg']
+35330 INFO: Extra dists for selected matplotlib backends: []
+35509 INFO: Processing standard module hook 'hook-PIL.SpiderImagePlugin.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+35571 INFO: Processing standard module hook 'hook-tzdata.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+37037 INFO: Performing binary vs. data reclassification (934 entries)
+37288 INFO: Looking for ctypes DLLs
+37326 INFO: Analyzing run-time hooks ...
+37328 INFO: Including run-time hook 'pyi_rth_mplconfig.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+37329 INFO: Processing pre-find-module-path hook 'hook-_pyi_rth_utils.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\pre_find_module_path'
+37333 INFO: Processing standard module hook 'hook-_pyi_rth_utils.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+37340 INFO: Including run-time hook 'pyi_rth_pkgutil.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+37343 INFO: Including run-time hook 'pyi_rth_multiprocessing.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+37345 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+37347 INFO: Including run-time hook 'pyi_rth_pyside6.py' from 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+37369 INFO: Creating base_library.zip...
+37386 INFO: Looking for dynamic libraries
+39267 INFO: Extra DLL search directories (AddDllDirectory): ['C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\shiboken6', 'C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\numpy.libs']
+39267 INFO: Extra DLL search directories (PATH): ['C:\\Users\\lenovo\\Desktop\\�ṹ��ѧ\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PySide6']
+41159 INFO: Warnings written to C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\build\MatrixDisplacement\warn-MatrixDisplacement.txt
+41201 INFO: Graph cross-reference written to C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\build\MatrixDisplacement\xref-MatrixDisplacement.html
+41247 INFO: checking PYZ
+41247 INFO: Building PYZ because PYZ-00.toc is non existent
+41247 INFO: Building PYZ (ZlibArchive) C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\build\MatrixDisplacement\PYZ-00.pyz
+41846 INFO: Building PYZ (ZlibArchive) C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\build\MatrixDisplacement\PYZ-00.pyz completed successfully.
+41858 INFO: checking PKG
+41858 INFO: Building PKG because PKG-00.toc is non existent
+41858 INFO: Building PKG (CArchive) MatrixDisplacement.pkg
+41893 INFO: Building PKG (CArchive) MatrixDisplacement.pkg completed successfully.
+41894 INFO: Bootloader C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\.venv\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\runw.exe
+41894 INFO: checking EXE
+41894 INFO: Building EXE because EXE-00.toc is non existent
+41894 INFO: Building EXE from EXE-00.toc
+41894 INFO: Copying bootloader EXE to C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\build\MatrixDisplacement\MatrixDisplacement.exe
+42033 INFO: Copying icon to EXE
+42158 INFO: Copying 0 resources to EXE
+42158 INFO: Embedding manifest in EXE
+42274 INFO: Appending PKG archive to EXE
+42451 INFO: Fixing EXE headers
+43029 INFO: Building EXE from EXE-00.toc completed successfully.
+43056 INFO: checking COLLECT
+43056 INFO: Building COLLECT because COLLECT-00.toc is non existent
+43056 INFO: Removing dir C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\dist\MatrixDisplacement
+43818 INFO: Building COLLECT COLLECT-00.toc
+46249 INFO: Building COLLECT COLLECT-00.toc completed successfully.
+46265 INFO: Build complete! The results are available in: C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\dist
+成功构建并完成离屏自检：C:\Users\lenovo\Desktop\结构力学\source\matrix_displacement_v11\dist\MatrixDisplacement\MatrixDisplacement.exe
+构建验证记录：C:\Users\lenovo\Desktop\结构力学\source\matrix_displacement_v11\dist\MatrixDisplacement\BUILD_VALIDATION.txt
+仍须按 docs/V1.1_WINDOWS_ACCEPTANCE.md 验证真实窗口、多显示器、恢复流程和分发。

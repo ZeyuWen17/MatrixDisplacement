@@ -55,7 +55,8 @@ def test_group_drag_and_single_undo(app):
 def test_version_and_auto_label_placement(app):
     w=MainWindow()
     try:
-        assert 'V1.0' in w.windowTitle()
+        from matrix_displacement import __version__
+        assert f'V{__version__}' in w.windowTitle()
         w._redraw()
         assert len(w.canvas.canvas_scene.items())>0
     finally:
