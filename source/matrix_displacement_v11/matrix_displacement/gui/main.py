@@ -555,6 +555,7 @@ class MainWindow(QMainWindow):
         self.selected_load_index=None
         self.result=None
         self.file_path=None
+        self._export_directory=None
         self._source_revision=None
         self.unsaved=False
         self.selected=None
@@ -602,6 +603,7 @@ class MainWindow(QMainWindow):
         action(analyze,'导出教学报告',self.export_report)
         action(analyze,'导出 CSV 数据',self.export_csv)
         action(analyze,'保存当前结果图',self.export_figure)
+        action(analyze,'导出全部结果图',self.export_all_figures)
         view_menu=self.menuBar().addMenu('视图')
         action(view_menu,'放大',lambda:self.canvas.zoom_by(1.25),'Ctrl++')
         action(view_menu,'缩小',lambda:self.canvas.zoom_by(.8),'Ctrl+-')
@@ -733,6 +735,8 @@ class MainWindow(QMainWindow):
         csv_btn.clicked.connect(self.export_csv);sv.addWidget(csv_btn)
         fig_btn=QPushButton('保存当前结果图 (.png)')
         fig_btn.clicked.connect(self.export_figure);sv.addWidget(fig_btn)
+        all_fig_btn=QPushButton('导出全部结果图 (.png)')
+        all_fig_btn.clicked.connect(self.export_all_figures);sv.addWidget(all_fig_btn)
         cbox.addWidget(solver_box)
         self.info=QLabel()
         self.info.setWordWrap(True)
@@ -1716,27 +1720,79 @@ class MainWindow(QMainWindow):
             return False
         return True
 
+    def _export_start_directory(self):
+        if self._export_directory is not None and self._export_directory.is_dir():
+            return self._export_directory
+        if self.file_path is not None and self.file_path.parent.is_dir():
+            return self.file_path.parent
+        return Path.cwd()
+
+    def _export_default_file(self, name):
+        prefix=f'{self.file_path.stem}_' if self.file_path else ''
+        return str(self._export_start_directory()/(prefix+name))
+
     def export_report(self):
         if not self._require_result():return
         if self.result.trace is None:
             QMessageBox.information(self,'需要教学模式','请切换“教学模式”并重新计算，才能导出组装过程。')
             return
-        path,_=QFileDialog.getSaveFileName(self,'导出教学报告','teaching_report.md',
+        path,_=QFileDialog.getSaveFileName(self,'导出教学报告',self._export_default_file('teaching_report.md'),
                                           'Markdown 文件 (*.md)')
         if not path:return
         try:
             save_teaching_report(self.editor.model,self.result,path)
+            self._export_directory=Path(path).resolve().parent
             self.statusBar().showMessage(f'教学报告已导出：{path}',7000)
         except Exception as exc:self._error(exc)
 
+    @staticmethod
+    def _new_export_directory(parent, name):
+        index=0
+        while True:
+            candidate=Path(parent)/(name if index==0 else f'{name}_{index:03d}')
+            try:
+                candidate.mkdir()
+                return candidate
+            except FileExistsError:
+                index+=1
+
     def export_csv(self):
         if not self._require_result():return
-        path=QFileDialog.getExistingDirectory(self,'选择 CSV 输出文件夹')
+        path=QFileDialog.getExistingDirectory(self,'选择 CSV 输出文件夹',str(self._export_start_directory()))
         if not path:return
+        directory=None
         try:
-            output=export_results_csv(self.editor.model,self.result,Path(path)/'csv_results',points=101)
-            self.statusBar().showMessage(f'结果 CSV 已导出至：{Path(path)/"csv_results"}',7000)
-        except Exception as exc:self._error(exc)
+            directory=self._new_export_directory(path,'csv_results')
+            export_results_csv(self.editor.model,self.result,directory,points=101)
+            self._export_directory=Path(path).resolve()
+            self.statusBar().showMessage(f'结果 CSV 已导出至：{directory}',7000)
+        except Exception as exc:
+            self._error(exc)
+            if directory is not None:
+                self.statusBar().showMessage(f'CSV 导出未完成：{directory}（可能包含部分文件，请勿作为完整结果使用）')
+
+    def export_all_figures(self):
+        if not self._require_result():return
+        titles=('轴力 N','剪力 V','弯矩 M','变形图')
+        if any(title not in self.figures for title in titles):
+            QMessageBox.information(self,'结果图不完整','请重新计算后再导出全部结果图。')
+            return
+        path=QFileDialog.getExistingDirectory(self,'选择全部结果图输出文件夹',str(self._export_start_directory()))
+        if not path:return
+        directory=None
+        completed=0
+        try:
+            prefix=f'{self.file_path.stem}_' if self.file_path else ''
+            directory=self._new_export_directory(path,prefix+'result_figures')
+            for title in titles:
+                self.figures[title].savefig(directory/f'{prefix}{title}.png',dpi=160,bbox_inches='tight')
+                completed+=1
+            self._export_directory=Path(path).resolve()
+            self.statusBar().showMessage(f'全部 4 张结果图已导出至：{directory}',10000)
+        except Exception as exc:
+            self._error(exc)
+            if directory is not None:
+                self.statusBar().showMessage(f'结果图导出未完成（{completed}/4）：{directory}（可能包含不完整文件）')
 
     def export_figure(self):
         if not self._require_result():return
@@ -1744,10 +1800,11 @@ class MainWindow(QMainWindow):
         if key not in self.figures:
             QMessageBox.information(self,'请选择图形','请先在计算结果页面选择轴力图、剪力图、弯矩图或变形图。')
             return
-        path,_=QFileDialog.getSaveFileName(self,'保存结果图',f'{key}.png','PNG 图片 (*.png)')
+        path,_=QFileDialog.getSaveFileName(self,'保存结果图',self._export_default_file(f'{key}.png'),'PNG 图片 (*.png)')
         if not path:return
         try:
             self.figures[key].savefig(path,dpi=160,bbox_inches='tight')
+            self._export_directory=Path(path).resolve().parent
             self.statusBar().showMessage(f'已保存结果图：{path}',7000)
         except Exception as exc:self._error(exc)
 
@@ -1790,6 +1847,22 @@ def main(argv=None):
                     figure.savefig(image_path,dpi=160,bbox_inches='tight')
                     if image_path.stat().st_size==0:
                         raise RuntimeError('Diagram export produced an empty file')
+                # Exercise the real export handlers without native file dialogs.
+                original_directory_dialog=QFileDialog.getExistingDirectory
+                try:
+                    QFileDialog.getExistingDirectory=lambda *args: folder
+                    window.export_csv()
+                    window.export_csv()
+                    window.export_all_figures()
+                    window.export_all_figures()
+                    for name in ('csv_results','csv_results_001'):
+                        if len(list((Path(folder)/name).glob('*.csv')))!=4:
+                            raise RuntimeError('CSV export did not preserve both batches')
+                    for name in ('result_figures','result_figures_001'):
+                        if len(list((Path(folder)/name).glob('*.png')))!=4:
+                            raise RuntimeError('Batch figure export failed')
+                finally:
+                    QFileDialog.getExistingDirectory=original_directory_dialog
                 window.history.execute(window.editor.add_node,7.0,2.0)
                 window._modified()
                 window._autosave_if_dirty()

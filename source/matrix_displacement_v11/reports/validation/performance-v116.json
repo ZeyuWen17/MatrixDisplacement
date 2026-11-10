@@ -1,0 +1,78 @@
+{
+  "python": "3.12.5",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "measurements": [
+    {
+      "nodes": 36,
+      "elements": 55,
+      "dofs": 108,
+      "mode": "none",
+      "solve_s": 0.0061,
+      "plot_s": 0.1323
+    },
+    {
+      "nodes": 36,
+      "elements": 55,
+      "dofs": 108,
+      "mode": "extrema",
+      "solve_s": 0.0061,
+      "plot_s": 0.7334
+    },
+    {
+      "nodes": 36,
+      "elements": 55,
+      "dofs": 108,
+      "mode": "all",
+      "solve_s": 0.0061,
+      "plot_s": 0.6843
+    },
+    {
+      "nodes": 121,
+      "elements": 210,
+      "dofs": 363,
+      "mode": "none",
+      "solve_s": 0.1408,
+      "plot_s": 0.312
+    },
+    {
+      "nodes": 121,
+      "elements": 210,
+      "dofs": 363,
+      "mode": "extrema",
+      "solve_s": 0.1408,
+      "plot_s": 9.036
+    },
+    {
+      "nodes": 121,
+      "elements": 210,
+      "dofs": 363,
+      "mode": "all",
+      "solve_s": 0.1408,
+      "plot_s": 4.7971
+    },
+    {
+      "nodes": 176,
+      "elements": 310,
+      "dofs": 528,
+      "mode": "none",
+      "solve_s": 0.191,
+      "plot_s": 0.4392
+    },
+    {
+      "nodes": 176,
+      "elements": 310,
+      "dofs": 528,
+      "mode": "extrema",
+      "solve_s": 0.191,
+      "plot_s": 6.4209
+    },
+    {
+      "nodes": 176,
+      "elements": 310,
+      "dofs": 528,
+      "mode": "all",
+      "solve_s": 0.191,
+      "plot_s": 6.4606
+    }
+  ]
+}

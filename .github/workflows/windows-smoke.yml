@@ -1,0 +1,44 @@
+name: Windows regression and packaged smoke
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'source/matrix_displacement_v11/**'
+      - '.github/workflows/windows-smoke.yml'
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  windows-build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: source/matrix_displacement_v11
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare dependencies
+        run: |
+          python -m venv .venv
+          .\.venv\Scripts\python.exe -m pip install -r requirements-build-windows.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Regression, source and packaged smoke
+        run: .\scripts\build_exe_windows.ps1 -SkipDependencyInstall
+      - name: Test packaged app with isolated PATH at 125 and 150 percent
+        run: |
+          $exe = (Get-ChildItem outputs/dist/V*/MatrixDisplacement/MatrixDisplacement.exe | Select-Object -Last 1).FullName
+          $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot"
+          $env:PYTHONHOME = $null
+          $env:PYTHONPATH = $null
+          $env:QT_QPA_PLATFORM = 'offscreen'
+          foreach ($scale in @('1.25','1.5')) {
+            $env:QT_SCALE_FACTOR = $scale
+            $process = Start-Process -FilePath $exe -ArgumentList '--self-test' -WindowStyle Hidden -PassThru
+            if (-not $process.WaitForExit(120000)) { $process.Kill(); throw 'Packaged smoke timeout' }
+            if ($process.ExitCode -ne 0) { throw "Packaged smoke failed: $scale" }
+          }
