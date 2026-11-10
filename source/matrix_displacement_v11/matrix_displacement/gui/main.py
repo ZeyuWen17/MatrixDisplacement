@@ -1442,18 +1442,34 @@ class MainWindow(QMainWindow):
                 if choice!='overwrite':
                     return False
             self.editor.save(path)
-            self._source_revision=FileRevision.capture(path)
-            self.history.mark_saved()
-            self._autosave_debounce.stop()
-            self.recovery.clear_current()
-            self.file_path=path
-            self.unsaved=False
-            self._update_title()
-            self.statusBar().showMessage(f'模型已保存：{path}',5000)
-            return True
         except Exception as exc:
             self._error(exc)
             return False
+
+        # The model is already committed. Ancillary failures must not turn a
+        # successful save into an apparent failure or lose the chosen path.
+        self.file_path=path
+        self.history.mark_saved()
+        self.unsaved=False
+        self._autosave_debounce.stop()
+        self._update_title()
+        warnings=[]
+        try:
+            self._source_revision=FileRevision.capture(path)
+        except OSError as exc:
+            # Unknown baseline: require confirmation before replacing an
+            # existing source on the next save.
+            self._source_revision=FileRevision(Path(path).resolve(),None)
+            warnings.append(f'无法读取保存后文件校验信息：{exc}')
+        try:
+            self.recovery.clear_current()
+        except OSError as exc:
+            warnings.append(f'旧恢复草稿未能清理，请勿将其误认为最新版本：{exc}')
+        message=f'模型已保存：{path}'
+        if warnings:
+            message+='；'+'；'.join(warnings)
+        self.statusBar().showMessage(message,0 if warnings else 5000)
+        return True
 
     def _resolve_save_conflict(self,path):
         dialog=QMessageBox(self)

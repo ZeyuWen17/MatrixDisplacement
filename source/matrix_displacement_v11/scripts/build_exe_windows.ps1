@@ -57,7 +57,7 @@ try {
         $sha = (Get-FileHash -Path $exe -Algorithm SHA256).Hash
         $report = Join-Path $distRoot 'MatrixDisplacement\BUILD_VALIDATION.txt'
         @(
-            'MatrixDisplacement V1.1.2 - Windows build validation',
+            "MatrixDisplacement V$version - Windows build validation",
             "Validated at: $(Get-Date -Format o)",
             'Packaged --self-test: PASS (Qt offscreen + solver + plots + recovery)',
             "EXE SHA256: $sha",

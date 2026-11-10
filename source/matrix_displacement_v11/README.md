@@ -1,6 +1,6 @@
 # MatrixDisplacement 矩阵位移法教学系统
 
-**当前版本：V1.1.2，Windows 自动验收通过，完整真实交互验收尚未完成。**
+**当前版本：V1.1.3，Windows 自动验收通过，完整真实交互验收尚未完成。**
 
 ## 用户需求与已有能力
 
@@ -8,7 +8,15 @@
 
 已实现单元刚度、坐标转换、整体组装、自由度管理、节点位移、反力、杆端内力；支持节点及杆件荷载、杆端释放、N/V/M 与变形图、截面查询、教学/快速模式、JSON/CSV/PNG/教学报告。GUI 源码具备建模、框选、多选、批量编辑、撤销重做、自动保存和崩溃草稿恢复。
 
-## V1.1.2 本次完善
+## V1.1.3 本次优化
+
+- 修复“文件已保存，但恢复草稿清理失败却误报保存失败”的状态问题。
+- 保存成功立即更新文件路径和未保存状态；校验读取/草稿清理失败单独提示。
+- 新增 3 项故障注入测试，完整回归 **280 passed、1 skipped**。
+- 详见 [V1.1.3 验证记录](docs/V1.1.3_VALIDATION.md)。构建日志：`validation/build-v113.txt`。
+- 最新程序目录：`dist/V1.1.3/MatrixDisplacement/`；交付包：`MatrixDisplacement_V1.1.3_Windows.zip` 与 `MatrixDisplacement_V1.1.3_Full_Source.zip`。
+
+## V1.1.2 历史完善
 
 - 新增 JSON 外部修改/删除检测，保存冲突时可另存为、明确覆盖或取消，避免无提示覆盖。
 - 恢复草稿保存回已有源文件时提示确认；取消保留未保存模型和快照。
@@ -29,7 +37,7 @@
 
 ## 使用与交付
 
-已构建程序位于 `dist/V1.1.2/MatrixDisplacement/MatrixDisplacement.exe`。必须保留整个 `MatrixDisplacement` 目录和 `_internal`，不能只复制 EXE。完整源码 ZIP 由 `python scripts/package_source.py` 生成。
+已构建程序位于 `dist/V1.1.3/MatrixDisplacement/MatrixDisplacement.exe`。必须保留整个 `MatrixDisplacement` 目录和 `_internal`，不能只复制 EXE。完整源码 ZIP 由 `python scripts/package_source.py` 生成。
 
 从源码启动（在项目根目录）：
 
