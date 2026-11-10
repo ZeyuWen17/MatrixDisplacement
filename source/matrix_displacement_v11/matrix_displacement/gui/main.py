@@ -1259,7 +1259,21 @@ class MainWindow(QMainWindow):
             self._autosave_debounce.start()
         else:
             self._autosave_debounce.stop()
-            self.recovery.clear_current()
+            self._try_clear_recovery()
+
+    def _try_clear_recovery(self,path=None):
+        """Cleanup is ancillary; keep surviving drafts and report failures."""
+        try:
+            if path is None:
+                self.recovery.clear_current()
+            else:
+                self.recovery.clear_entry(path)
+            return True
+        except OSError as exc:
+            target=path if path is not None else self.recovery.current_path
+            self.statusBar().showMessage(
+                f'恢复草稿未能清理，文件仍保留，请勿误认为最新版本：{target}；{exc}',0)
+            return False
 
     def _autosave_if_dirty(self):
         if not self.history.is_dirty:
@@ -1274,7 +1288,7 @@ class MainWindow(QMainWindow):
         """Start a new session after a successful document change."""
         self._source_revision=None
         self._autosave_debounce.stop()
-        self.recovery.clear_current()
+        self._try_clear_recovery()
         self.recovery=RecoveryStore(self.recovery.directory)
 
     def _offer_recovery(self):
@@ -1313,7 +1327,7 @@ class MainWindow(QMainWindow):
         message.exec()
         selected=message.clickedButton()
         if selected is discard:
-            self.recovery.clear_entry(entry.path)
+            self._try_clear_recovery(entry.path)
             return
         if selected is restore:
             self._restore_entry(entry)
@@ -1343,9 +1357,12 @@ class MainWindow(QMainWindow):
             self.canvas.fit_all()
             self._update_title()
             self._update_history_actions()
-            if entry.path != self.recovery.current_path:
-                self.recovery.clear_entry(entry.path)
-            self.statusBar().showMessage('草稿已恢复到内存；请检查后手动保存 JSON。',10000)
+            cleaned=(entry.path == self.recovery.current_path or
+                     self._try_clear_recovery(entry.path))
+            if cleaned:
+                self.statusBar().showMessage('草稿已恢复到内存；请检查后手动保存 JSON。',10000)
+            else:
+                self.statusBar().showMessage('草稿已恢复到内存，请手动保存；旧恢复草稿未能清理，仍保留在原位置。',0)
             return True
         except Exception as exc:
             self._error(exc)
@@ -1365,7 +1382,11 @@ class MainWindow(QMainWindow):
         if self._maybe_save():
             self._autosave_debounce.stop()
             self._autosave_periodic.stop()
-            self.recovery.clear_current()
+            if not self._try_clear_recovery():
+                QMessageBox.warning(self,'旧恢复草稿仍保留',
+                    '当前保存或放弃操作已完成，但旧恢复草稿无法清理。\n'
+                    '下次启动可能再次提示该草稿，请核对时间和内容，勿覆盖最新文件。\n'
+                    f'位置：{self.recovery.current_path}')
             event.accept()
         else:
             event.ignore()

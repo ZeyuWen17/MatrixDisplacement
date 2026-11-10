@@ -2,6 +2,7 @@
 from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 import sys
+import os
 
 root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(root))
@@ -12,15 +13,17 @@ destination.mkdir(parents=True, exist_ok=True)
 archive = destination / f'MatrixDisplacement_V{__version__}_Full_Source.zip'
 excluded = {'.venv', '__pycache__', '.pytest_cache', '.git', 'build', 'dist'}
 with ZipFile(archive, 'w', ZIP_DEFLATED) as z:
-    for path in sorted(root.rglob('*')):
-        relative = path.relative_to(root)
-        if not path.is_file() or any(part in excluded for part in relative.parts):
-            continue
-        if relative.parts[0] == 'validation' and (len(relative.parts) > 1 and relative.parts[1] in {'mplconfig', 'pyinstaller-cache', 'recovery', 'logs'}):
-            continue
-        if path.suffix in {'.pyc', '.zip', '.spec'}:
-            continue
-        z.write(path, Path(f'matrix_displacement_v{__version__}') / relative)
+    for directory, dirs, files in os.walk(root):
+        # Prune before traversal: never enter environments, build outputs or
+        # test scratch directories (which may have restricted permissions).
+        dirs[:]=sorted(d for d in dirs if d not in excluded)
+        if Path(directory)==root/'validation':
+            dirs[:]=[]
+        for name in sorted(files):
+            path=Path(directory)/name
+            if path.suffix in {'.pyc', '.zip', '.spec'}:
+                continue
+            z.write(path, Path(f'matrix_displacement_v{__version__}') / path.relative_to(root))
 with ZipFile(archive) as z:
     assert z.testzip() is None
 print(archive)
