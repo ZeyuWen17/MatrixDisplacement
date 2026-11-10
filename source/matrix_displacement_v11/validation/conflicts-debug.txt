@@ -1,0 +1,49 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.5, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\lenovo\Desktop\�ṹ��ѧ\source\matrix_displacement_v11
+collecting ... collected 7 items
+
+tests/test_save_conflicts_v112.py::test_changed_content_with_same_size_and_timestamp PASSED [ 14%]
+tests/test_save_conflicts_v112.py::test_cancel_keeps_external_file_and_unsaved_draft PASSED [ 28%]
+tests/test_save_conflicts_v112.py::test_save_as_preserves_both_versions PASSED [ 42%]
+tests/test_save_conflicts_v112.py::test_explicit_overwrite_refreshes_baseline PASSED [ 57%]
+tests/test_save_conflicts_v112.py::test_save_as_same_source_cannot_bypass_conflict PASSED [ 71%]
+tests/test_save_conflicts_v112.py::test_opened_file_and_new_document_baselines PASSED [ 85%]
+Timeout (0:00:15)!
+Thread 0x0000f0e0 (most recent call first):
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\matrix_displacement\gui\main.py", line 1111 in _error
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\matrix_displacement\gui\main.py", line 1351 in _restore_entry
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\tests\test_save_conflicts_v112.py", line 104 in test_restored_draft_does_not_trust_current_source
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\python.py", line 187 in pytest_pyfunc_call
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_execution.py", line 147 in _multicall
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_manager.py", line 183 in _hookexec
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_caller.py", line 197 in __call__
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\python.py", line 1798 in runtest
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\runner.py", line 184 in pytest_runtest_call
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_execution.py", line 147 in _multicall
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_manager.py", line 183 in _hookexec
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_caller.py", line 197 in __call__
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\runner.py", line 250 in <lambda>
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\runner.py", line 361 in from_call
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\runner.py", line 249 in call_and_report
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\runner.py", line 139 in runtestprotocol
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\runner.py", line 118 in pytest_runtest_protocol
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_execution.py", line 147 in _multicall
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_manager.py", line 183 in _hookexec
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_caller.py", line 197 in __call__
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\main.py", line 411 in pytest_runtestloop
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_execution.py", line 147 in _multicall
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_manager.py", line 183 in _hookexec
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_caller.py", line 197 in __call__
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\main.py", line 387 in _main
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\main.py", line 333 in wrap_session
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\main.py", line 380 in pytest_cmdline_main
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_execution.py", line 147 in _multicall
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_manager.py", line 183 in _hookexec
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pluggy\_caller.py", line 197 in __call__
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\config\__init__.py", line 262 in _main
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\_pytest\config\__init__.py", line 286 in _console_main
+  File "C:\Users\lenovo\Desktop\\u7ed3\u6784\u529b\u5b66\source\matrix_displacement_v11\.venv\Lib\site-packages\pytest\__main__.py", line 9 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 198 in _run_module_as_main

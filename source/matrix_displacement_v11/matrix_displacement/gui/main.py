@@ -33,6 +33,7 @@ from matrix_displacement.reporting import save_teaching_report
 from matrix_displacement.exporting import export_results_csv
 from matrix_displacement.visualization import plot_force_diagram, plot_deformed_shape
 from matrix_displacement.recovery import RecoveryStore
+from matrix_displacement.file_revision import FileRevision
 
 # QGraphicsScene pixels per metre; scene Y is reversed for positive global Y.
 PIXELS_PER_METRE = 65.0
@@ -547,6 +548,7 @@ class MainWindow(QMainWindow):
         self.selected_load_index=None
         self.result=None
         self.file_path=None
+        self._source_revision=None
         self.unsaved=False
         self.selected=None
         self.selection=set()
@@ -621,7 +623,9 @@ class MainWindow(QMainWindow):
         heading=QLabel(f'矩阵位移法 · V{__version__}')
         heading.setStyleSheet('font-size:17px;font-weight:600;')
         cbox.addWidget(heading)
-        cbox.addWidget(QLabel('二维结构建模与教学静力分析 · 自动保存与崩溃恢复'))
+        subtitle=QLabel('二维结构建模与教学静力分析 · 自动保存与崩溃恢复')
+        subtitle.setWordWrap(True)
+        cbox.addWidget(subtitle)
         modes=QGroupBox('鼠标编辑工具')
         mb=QVBoxLayout(modes)
         self.tool_group=QButtonGroup(self)
@@ -705,7 +709,13 @@ class MainWindow(QMainWindow):
         self.mode_combo=QComboBox()
         self.mode_combo.addItem('教学模式（保留组装矩阵）',Mode.TEACHING.value)
         self.mode_combo.addItem('快速模式（不保留中间矩阵）',Mode.FAST.value)
-        sv.addWidget(self.mode_combo)
+        toolbar=self.addToolBar('常用操作')
+        toolbar.setMovable(False)
+        toolbar.addAction('打开',self.open_model)
+        toolbar.addAction('保存',lambda:self.save_model())
+        toolbar.addSeparator()
+        toolbar.addWidget(self.mode_combo)
+        toolbar.addAction('计算并显示结果（Ctrl+R）',self.solve)
         solve_btn=QPushButton('▶ 计算并显示结果')
         solve_btn.setStyleSheet('font-weight:600; min-height:30px;')
         solve_btn.clicked.connect(self.solve)
@@ -1262,6 +1272,7 @@ class MainWindow(QMainWindow):
 
     def _rotate_recovery(self):
         """Start a new session after a successful document change."""
+        self._source_revision=None
         self._autosave_debounce.stop()
         self.recovery.clear_current()
         self.recovery=RecoveryStore(self.recovery.directory)
@@ -1318,6 +1329,9 @@ class MainWindow(QMainWindow):
             self.history.reset()
             self.history.mark_recovered_unsaved()
             self.file_path=Path(entry.source_path) if entry.source_path else None
+            # A draft has no trustworthy baseline for the current source file.
+            self._source_revision=(FileRevision(self.file_path.resolve(), None)
+                                   if self.file_path else None)
             self.selected=None
             self.selection.clear()
             self.pending_node=None
@@ -1395,12 +1409,14 @@ class MainWindow(QMainWindow):
         path,_=QFileDialog.getOpenFileName(self,'打开结构模型','','JSON 模型 (*.json)')
         if not path:return
         try:
+            revision=FileRevision.capture(path)
             self.editor.open(path)
             self._rotate_recovery()
             self.selected_load_index=None
             self.history.reset()
             self._update_history_actions()
             self.file_path=Path(path)
+            self._source_revision=revision
             self.unsaved=False
             self.result=None
             self.selected=None
@@ -1419,7 +1435,14 @@ class MainWindow(QMainWindow):
             path=Path(chosen)
             if path.suffix.lower()!='.json':path=path.with_suffix('.json')
         try:
+            if self._source_revision and self._source_revision.conflicts(path):
+                choice=self._resolve_save_conflict(path)
+                if choice=='save_as':
+                    return self.save_model(save_as=True)
+                if choice!='overwrite':
+                    return False
             self.editor.save(path)
+            self._source_revision=FileRevision.capture(path)
             self.history.mark_saved()
             self._autosave_debounce.stop()
             self.recovery.clear_current()
@@ -1431,6 +1454,21 @@ class MainWindow(QMainWindow):
         except Exception as exc:
             self._error(exc)
             return False
+
+    def _resolve_save_conflict(self,path):
+        dialog=QMessageBox(self)
+        dialog.setWindowTitle('文件已被其他程序修改')
+        dialog.setIcon(QMessageBox.Icon.Warning)
+        dialog.setText(f'磁盘文件已更改或删除，或恢复草稿无法确认原文件版本：\n{path}')
+        dialog.setInformativeText('建议另存为保留两份模型。覆盖将替换磁盘版本；取消会保留当前未保存的修改。')
+        save_as=dialog.addButton('另存为',QMessageBox.ButtonRole.ActionRole)
+        overwrite=dialog.addButton('仍然覆盖',QMessageBox.ButtonRole.DestructiveRole)
+        cancel=dialog.addButton('取消',QMessageBox.ButtonRole.RejectRole)
+        dialog.setDefaultButton(save_as)
+        dialog.setEscapeButton(cancel)
+        dialog.exec()
+        return 'save_as' if dialog.clickedButton() is save_as else (
+            'overwrite' if dialog.clickedButton() is overwrite else 'cancel')
 
     def solve(self):
         try:

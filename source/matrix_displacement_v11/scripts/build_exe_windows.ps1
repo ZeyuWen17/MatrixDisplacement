@@ -18,6 +18,9 @@ try {
     }
     & $python -c 'import PySide6; from PySide6.QtWidgets import QApplication'
     if ($LASTEXITCODE -ne 0) { throw 'PySide6 无法导入。' }
+    $version = & $python -c 'from matrix_displacement import __version__; print(__version__)'
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot read package version.' }
+    $distRoot = Join-Path $root "dist\V$version"
     $previousQt = $env:QT_QPA_PLATFORM
     try {
         $env:QT_QPA_PLATFORM = 'offscreen'
@@ -32,12 +35,13 @@ try {
         # Prevent unrelated tools on PATH from supplying incompatible Qt dependencies (e.g. ICU).
         $env:PATH = "$(Join-Path $root '.venv\Scripts');$env:SystemRoot\System32;$env:SystemRoot"
         & $python -m PyInstaller --noconfirm --clean --windowed --onedir `
+            --distpath $distRoot `
             --name MatrixDisplacement `
             --paths $root `
             --hidden-import matplotlib.backends.backend_qtagg `
             scripts/gui_launcher.py
         if ($LASTEXITCODE -ne 0) { throw 'PyInstaller 构建失败。' }
-        $exe = Join-Path $root 'dist\MatrixDisplacement\MatrixDisplacement.exe'
+        $exe = Join-Path $distRoot 'MatrixDisplacement\MatrixDisplacement.exe'
         if (-not (Test-Path $exe)) { throw "未找到生成的 EXE：$exe" }
         # Even -SkipTests must not bypass packaged EXE execution verification.
         # Start-Process -Wait is needed because --windowed exe is a GUI subsystem binary.
@@ -51,9 +55,9 @@ try {
             throw "打包后的 EXE 离屏自检失败，退出代码 $($process.ExitCode)。请检查用户本地 GUI 错误日志。"
         }
         $sha = (Get-FileHash -Path $exe -Algorithm SHA256).Hash
-        $report = Join-Path $root 'dist\MatrixDisplacement\BUILD_VALIDATION.txt'
+        $report = Join-Path $distRoot 'MatrixDisplacement\BUILD_VALIDATION.txt'
         @(
-            'MatrixDisplacement V1.1 - Windows build validation',
+            'MatrixDisplacement V1.1.2 - Windows build validation',
             "Validated at: $(Get-Date -Format o)",
             'Packaged --self-test: PASS (Qt offscreen + solver + plots + recovery)',
             "EXE SHA256: $sha",
