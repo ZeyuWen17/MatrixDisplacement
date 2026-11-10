@@ -1,0 +1,393 @@
+windows-build	Set up job	﻿2026-11-10T08:09:41.9318482Z Current runner version: '2.338.2'
+windows-build	Set up job	2026-11-10T08:09:41.9365824Z ##[group]Runner Image Provisioner
+windows-build	Set up job	2026-11-10T08:09:41.9366458Z Hosted Compute Agent
+windows-build	Set up job	2026-11-10T08:09:41.9366837Z Version: 20261103.629
+windows-build	Set up job	2026-11-10T08:09:41.9367237Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+windows-build	Set up job	2026-11-10T08:09:41.9367705Z Build Date: 2026-11-03T17:26:59Z
+windows-build	Set up job	2026-11-10T08:09:41.9368121Z Worker ID: {dc6c936c-bc81-47c6-a98c-957285c79a4b}
+windows-build	Set up job	2026-11-10T08:09:41.9368529Z Region: northcentralus
+windows-build	Set up job	2026-11-10T08:09:41.9368864Z Cloud: Azure
+windows-build	Set up job	2026-11-10T08:09:41.9369176Z ##[endgroup]
+windows-build	Set up job	2026-11-10T08:09:41.9369909Z ##[group]Operating System
+windows-build	Set up job	2026-11-10T08:09:41.9370299Z Microsoft Windows Server 2025
+windows-build	Set up job	2026-11-10T08:09:41.9370639Z 10.0.26100
+windows-build	Set up job	2026-11-10T08:09:41.9370943Z Datacenter
+windows-build	Set up job	2026-11-10T08:09:41.9371243Z ##[endgroup]
+windows-build	Set up job	2026-11-10T08:09:41.9371558Z ##[group]Runner Image
+windows-build	Set up job	2026-11-10T08:09:41.9371902Z Image: windows-2025-vs2026
+windows-build	Set up job	2026-11-10T08:09:41.9372293Z Version: 20261103.298.1
+windows-build	Set up job	2026-11-10T08:09:41.9372981Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261103.298/images/windows/Windows2025-VS2026-Readme.md
+windows-build	Set up job	2026-11-10T08:09:41.9374171Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20261103.298
+windows-build	Set up job	2026-11-10T08:09:41.9374726Z ##[endgroup]
+windows-build	Set up job	2026-11-10T08:09:41.9375448Z ##[group]GITHUB_TOKEN Permissions
+windows-build	Set up job	2026-11-10T08:09:41.9376595Z Contents: read
+windows-build	Set up job	2026-11-10T08:09:41.9376909Z Metadata: read
+windows-build	Set up job	2026-11-10T08:09:41.9377547Z ##[endgroup]
+windows-build	Set up job	2026-11-10T08:09:41.9378915Z Secret source: Actions
+windows-build	Set up job	2026-11-10T08:09:41.9379518Z Cache mode: write
+windows-build	Set up job	2026-11-10T08:09:41.9380057Z Prepare workflow directory
+windows-build	Set up job	2026-11-10T08:09:41.9705117Z Prepare all required actions
+windows-build	Set up job	2026-11-10T08:09:41.9751549Z Getting action download info
+windows-build	Set up job	2026-11-10T08:09:42.1952830Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+windows-build	Set up job	2026-11-10T08:09:42.3182709Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+windows-build	Set up job	2026-11-10T08:09:42.5452094Z Complete job name: windows-build
+windows-build	Run actions/checkout@v4	﻿2026-11-10T08:09:42.6603173Z ##[group]Run actions/checkout@v4
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6603919Z with:
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6604166Z   repository: ZeyuWen17/MatrixDisplacement
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6606439Z   token: ***
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6606661Z   ssh-strict: true
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6606887Z   ssh-user: git
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6607122Z   persist-credentials: true
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6607381Z   clean: true
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6607614Z   sparse-checkout-cone-mode: true
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6607885Z   fetch-depth: 1
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6608107Z   fetch-tags: false
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6608333Z   show-progress: true
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6608560Z   lfs: false
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6608768Z   submodules: false
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6608997Z   set-safe-directory: true
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6609258Z   allow-unsafe-pr-checkout: false
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:42.6609619Z ##[endgroup]
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3333239Z Syncing repository: ZeyuWen17/MatrixDisplacement
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3335855Z ##[group]Getting Git version info
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3358893Z Working directory is 'D:\a\MatrixDisplacement\MatrixDisplacement'
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3360493Z [command]"C:\Program Files\Git\bin\git.exe" version
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3361293Z git version 2.56.0.windows.4
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3363533Z ##[endgroup]
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3368152Z Temporarily overriding HOME='D:\a\_temp\2c80a55b-0bcb-4d0a-a1d5-7c4647fadd17' before making global git config changes
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3369971Z Adding repository directory to the temporary git global config as a safe directory
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3371753Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\MatrixDisplacement\MatrixDisplacement
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3374248Z Deleting the contents of 'D:\a\MatrixDisplacement\MatrixDisplacement'
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3375977Z ##[group]Initializing the repository
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3377335Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\MatrixDisplacement\MatrixDisplacement
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3381322Z Initialized empty Git repository in D:/a/MatrixDisplacement/MatrixDisplacement/.git/
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3384385Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/ZeyuWen17/MatrixDisplacement
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3387322Z ##[endgroup]
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3388591Z ##[group]Disabling automatic garbage collection
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3389818Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3392306Z ##[endgroup]
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3393788Z ##[group]Setting up auth
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3395117Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.3398962Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.8938559Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:44.9375951Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:45.3889289Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:45.4176725Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:45.8470870Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:45.8773788Z ##[endgroup]
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:45.8774682Z ##[group]Fetching the repository
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:45.8798355Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a61f63d7a38ded151a2c840ae3852322964ce3de:refs/remotes/origin/main
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:46.8528703Z From https://github.com/ZeyuWen17/MatrixDisplacement
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:46.8547506Z  * [new ref]         a61f63d7a38ded151a2c840ae3852322964ce3de -> origin/main
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:46.8606670Z ##[endgroup]
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:46.8617447Z ##[group]Determining the checkout info
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:46.8618237Z ##[endgroup]
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:46.8622433Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:46.9045500Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:46.9351798Z ##[group]Checking out the ref
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:46.9359926Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B main refs/remotes/origin/main
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:47.0115611Z Switched to a new branch 'main'
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:47.0202104Z branch 'main' set up to track 'origin/main'.
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:47.0238697Z ##[endgroup]
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:47.0624146Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+windows-build	Run actions/checkout@v4	2026-11-10T08:09:47.0875390Z a61f63d7a38ded151a2c840ae3852322964ce3de
+windows-build	Run actions/setup-python@v5	﻿2026-11-10T08:09:47.1247315Z ##[group]Run actions/setup-python@v5
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.1247554Z with:
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.1247687Z   python-version: 3.12
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.1247810Z   check-latest: false
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.1249307Z   token: ***
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.1249423Z   update-environment: true
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.1249559Z   allow-prereleases: false
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.1249684Z   freethreaded: false
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.1249801Z ##[endgroup]
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.2463007Z ##[group]Installed versions
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.2628193Z (node:7068) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.2629034Z (Use `node --trace-deprecation ...` to show where the warning was created)
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.2630669Z Successfully set up CPython (3.12.10)
+windows-build	Run actions/setup-python@v5	2026-11-10T08:09:47.2631323Z ##[endgroup]
+windows-build	Prepare dependencies	﻿2026-11-10T08:09:47.2865147Z ##[group]Run python -m venv .venv
+windows-build	Prepare dependencies	2026-11-10T08:09:47.2865483Z ^[[36;1mpython -m venv .venv^[[0m
+windows-build	Prepare dependencies	2026-11-10T08:09:47.2865760Z ^[[36;1m.\.venv\Scripts\python.exe -m pip install -r requirements-build-windows.txt^[[0m
+windows-build	Prepare dependencies	2026-11-10T08:09:47.2866206Z ^[[36;1mif ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }^[[0m
+windows-build	Prepare dependencies	2026-11-10T08:09:47.3390272Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+windows-build	Prepare dependencies	2026-11-10T08:09:47.3390549Z env:
+windows-build	Prepare dependencies	2026-11-10T08:09:47.3390734Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+windows-build	Prepare dependencies	2026-11-10T08:09:47.3440394Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+windows-build	Prepare dependencies	2026-11-10T08:09:47.3440919Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+windows-build	Prepare dependencies	2026-11-10T08:09:47.3441252Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+windows-build	Prepare dependencies	2026-11-10T08:09:47.3441622Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+windows-build	Prepare dependencies	2026-11-10T08:09:47.3441958Z ##[endgroup]
+windows-build	Prepare dependencies	2026-11-10T08:09:53.6629326Z Collecting numpy>=1.24 (from -r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 1))
+windows-build	Prepare dependencies	2026-11-10T08:09:53.6937726Z   Downloading numpy-2.5.4-cp312-cp312-win_amd64.whl.metadata (6.6 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:53.7939917Z Collecting matplotlib>=3.7 (from -r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:53.7994557Z   Downloading matplotlib-3.11.2-cp312-cp312-win_amd64.whl.metadata (80 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:53.8582453Z Collecting pytest>=7.0 (from -r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 3))
+windows-build	Prepare dependencies	2026-11-10T08:09:53.8612055Z   Downloading pytest-9.2.0-py3-none-any.whl.metadata (7.9 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:53.8985336Z Collecting PySide6<7,>=6.6 (from -r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements-gui.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:53.9022278Z   Downloading pyside6-6.12.0-cp310-abi3-win_amd64.whl.metadata (5.7 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:53.9497539Z Collecting PyInstaller<7,>=6.0 (from -r requirements-build-windows.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:53.9545496Z   Downloading pyinstaller-6.22.3-py3-none-win_amd64.whl.metadata (8.5 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.0256659Z Collecting contourpy>=1.0.1 (from matplotlib>=3.7->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.0293197Z   Downloading contourpy-1.4.0-cp312-cp312-win_amd64.whl.metadata (3.8 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.0679268Z Collecting cycler>=0.10 (from matplotlib>=3.7->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.0712255Z   Downloading cycler-0.12.1-py3-none-any.whl.metadata (3.8 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.1790107Z Collecting fonttools>=4.28.2 (from matplotlib>=3.7->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.1846937Z   Downloading fonttools-4.68.0-cp312-cp312-win_amd64.whl.metadata (142 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.2566175Z Collecting kiwisolver>=1.3.1 (from matplotlib>=3.7->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.2616021Z   Downloading kiwisolver-1.5.1-cp312-cp312-win_amd64.whl.metadata (5.2 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.3061660Z Collecting packaging>=20.0 (from matplotlib>=3.7->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.3109703Z   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.4850435Z Collecting pillow>=9 (from matplotlib>=3.7->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.4903115Z   Downloading pillow-13.0.0-cp312-cp312-win_amd64.whl.metadata (9.3 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.5340214Z Collecting pyparsing>=3 (from matplotlib>=3.7->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.5374813Z   Downloading pyparsing-3.3.3-py3-none-any.whl.metadata (5.9 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.5689505Z Collecting python-dateutil>=2.7 (from matplotlib>=3.7->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.5723722Z   Downloading python_dateutil-4.0.0-py3-none-any.whl.metadata (7.3 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.6052470Z Collecting colorama>=0.4 (from pytest>=7.0->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 3))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.6095392Z   Downloading colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.6446121Z Collecting iniconfig>=2 (from pytest>=7.0->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 3))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.6483699Z   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.6817821Z Collecting pluggy<2,>=1.6 (from pytest>=7.0->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 3))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.6853046Z   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.7202961Z Collecting pygments>=2.15 (from pytest>=7.0->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 3))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.7237694Z   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.7631955Z Collecting PySide6_Essentials==6.12.0 (from PySide6<7,>=6.6->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements-gui.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.7665593Z   Downloading pyside6_essentials-6.12.0-cp310-abi3-win_amd64.whl.metadata (3.9 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.8346207Z Collecting PySide6_Addons==6.12.0 (from PySide6<7,>=6.6->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements-gui.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.8381299Z   Downloading pyside6_addons-6.12.0-cp310-abi3-win_amd64.whl.metadata (4.4 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.8707952Z Collecting PySide6_WebEngine==6.12.0.140 (from PySide6<7,>=6.6->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements-gui.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.8748614Z   Downloading pyside6_webengine-6.12.0.140-cp310-abi3-win_amd64.whl.metadata (3.7 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.9075306Z Collecting PySide6_Pdf==6.12.0.140 (from PySide6<7,>=6.6->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements-gui.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.9107418Z   Downloading pyside6_pdf-6.12.0.140-cp310-abi3-win_amd64.whl.metadata (3.6 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.9492883Z Collecting shiboken6==6.12.0 (from PySide6_Essentials==6.12.0->PySide6<7,>=6.6->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements-gui.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.9525315Z   Downloading shiboken6-6.12.0-cp310-abi3-win_amd64.whl.metadata (2.6 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:54.9898034Z Collecting altgraph (from PyInstaller<7,>=6.0->-r requirements-build-windows.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:54.9933586Z   Downloading altgraph-0.17.5-py2.py3-none-any.whl.metadata (7.5 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:55.0259084Z Collecting pefile>=2022.5.30 (from PyInstaller<7,>=6.0->-r requirements-build-windows.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:55.0328631Z   Downloading pefile-2024.8.26-py3-none-any.whl.metadata (1.4 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:55.0690116Z Collecting pyinstaller-hooks-contrib>=2026.7 (from PyInstaller<7,>=6.0->-r requirements-build-windows.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:55.0724715Z   Downloading pyinstaller_hooks_contrib-2026.10-py3-none-any.whl.metadata (16 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:55.1020675Z Collecting pywin32-ctypes>=0.2.1 (from PyInstaller<7,>=6.0->-r requirements-build-windows.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:55.1053189Z   Downloading pywin32_ctypes-0.2.3-py3-none-any.whl.metadata (3.9 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:55.9130177Z Collecting setuptools>=42.0.0 (from PyInstaller<7,>=6.0->-r requirements-build-windows.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:55.9131871Z   Downloading setuptools-84.2.1-py3-none-any.whl.metadata (6.6 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:55.9132577Z Collecting tzdata (from python-dateutil>=2.7->matplotlib>=3.7->-r D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\requirements.txt (line 2))
+windows-build	Prepare dependencies	2026-11-10T08:09:55.9133247Z   Downloading tzdata-2026.6-py2.py3-none-any.whl.metadata (1.4 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:55.9133619Z Downloading numpy-2.5.4-cp312-cp312-win_amd64.whl (12.6 MB)
+windows-build	Prepare dependencies	2026-11-10T08:09:55.9133975Z    ---------------------------------------- 12.6/12.6 MB 49.2 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:55.9134376Z Downloading matplotlib-3.11.2-cp312-cp312-win_amd64.whl (9.3 MB)
+windows-build	Prepare dependencies	2026-11-10T08:09:55.9134742Z    ---------------------------------------- 9.3/9.3 MB 116.5 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:55.9135089Z Downloading pytest-9.2.0-py3-none-any.whl (411 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:55.9135436Z Downloading pyside6-6.12.0-cp310-abi3-win_amd64.whl (578 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:55.9135849Z    --------------------------------------- 579.0/579.0 kB 19.8 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:55.9136223Z Downloading pyside6_addons-6.12.0-cp310-abi3-win_amd64.whl (40.5 MB)
+windows-build	Prepare dependencies	2026-11-10T08:09:56.1438292Z    ---------------------------------------- 40.5/40.5 MB 83.2 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:56.1503511Z Downloading pyside6_essentials-6.12.0-cp310-abi3-win_amd64.whl (82.2 MB)
+windows-build	Prepare dependencies	2026-11-10T08:09:57.1956533Z    ---------------------------------------- 82.2/82.2 MB 78.2 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:57.2028799Z Downloading pyside6_pdf-6.12.0.140-cp310-abi3-win_amd64.whl (3.0 MB)
+windows-build	Prepare dependencies	2026-11-10T08:09:57.2380938Z    ---------------------------------------- 3.0/3.0 MB 87.8 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:57.2446410Z Downloading pyside6_webengine-6.12.0.140-cp310-abi3-win_amd64.whl (131.7 MB)
+windows-build	Prepare dependencies	2026-11-10T08:09:58.7988835Z    --------------------------------------- 131.7/131.7 MB 84.1 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:58.8046922Z Downloading shiboken6-6.12.0-cp310-abi3-win_amd64.whl (1.3 MB)
+windows-build	Prepare dependencies	2026-11-10T08:09:58.8294017Z    ---------------------------------------- 1.3/1.3 MB 66.9 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:58.8333168Z Downloading pyinstaller-6.22.3-py3-none-win_amd64.whl (1.5 MB)
+windows-build	Prepare dependencies	2026-11-10T08:09:58.8629881Z    ---------------------------------------- 1.5/1.5 MB 38.5 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:58.8663979Z Downloading colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:58.8817914Z Downloading contourpy-1.4.0-cp312-cp312-win_amd64.whl (234 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:58.8993515Z Downloading cycler-0.12.1-py3-none-any.whl (8.3 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:58.9220230Z Downloading fonttools-4.68.0-cp312-cp312-win_amd64.whl (2.5 MB)
+windows-build	Prepare dependencies	2026-11-10T08:09:58.9548591Z    ---------------------------------------- 2.5/2.5 MB 73.3 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:58.9584154Z Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:58.9730720Z Downloading kiwisolver-1.5.1-cp312-cp312-win_amd64.whl (70 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:58.9913805Z Downloading packaging-26.3-py3-none-any.whl (129 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:59.0073126Z Downloading pefile-2024.8.26-py3-none-any.whl (74 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:59.0238818Z Downloading pillow-13.0.0-cp312-cp312-win_amd64.whl (7.3 MB)
+windows-build	Prepare dependencies	2026-11-10T08:09:59.0880790Z    ---------------------------------------- 7.3/7.3 MB 111.3 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:59.0918852Z Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:59.1073205Z Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+windows-build	Prepare dependencies	2026-11-10T08:09:59.1317457Z    ---------------------------------------- 1.3/1.3 MB 31.9 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:59.1357879Z Downloading pyinstaller_hooks_contrib-2026.10-py3-none-any.whl (463 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:59.1615477Z Downloading pyparsing-3.3.3-py3-none-any.whl (126 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:59.1770766Z Downloading python_dateutil-4.0.0-py3-none-any.whl (92 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:59.1938567Z Downloading pywin32_ctypes-0.2.3-py3-none-any.whl (30 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:59.2071135Z Downloading setuptools-84.2.1-py3-none-any.whl (876 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:59.2304621Z    --------------------------------------- 876.3/876.3 kB 38.4 MB/s eta 0:00:00
+windows-build	Prepare dependencies	2026-11-10T08:09:59.2330103Z Downloading altgraph-0.17.5-py2.py3-none-any.whl (21 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:59.2506676Z Downloading tzdata-2026.6-py2.py3-none-any.whl (348 kB)
+windows-build	Prepare dependencies	2026-11-10T08:09:59.6320217Z Installing collected packages: altgraph, tzdata, shiboken6, setuptools, pywin32-ctypes, pyparsing, pygments, pluggy, pillow, pefile, packaging, numpy, kiwisolver, iniconfig, fonttools, cycler, colorama, python-dateutil, pytest, PySide6_Essentials, pyinstaller-hooks-contrib, contourpy, PySide6_Pdf, PySide6_Addons, PyInstaller, matplotlib, PySide6_WebEngine, PySide6
+windows-build	Prepare dependencies	2026-11-10T08:10:11.5934747Z Successfully installed PyInstaller-6.22.3 PySide6-6.12.0 PySide6_Addons-6.12.0 PySide6_Essentials-6.12.0 PySide6_Pdf-6.12.0.140 PySide6_WebEngine-6.12.0.140 altgraph-0.17.5 colorama-0.4.6 contourpy-1.4.0 cycler-0.12.1 fonttools-4.68.0 iniconfig-2.3.1 kiwisolver-1.5.1 matplotlib-3.11.2 numpy-2.5.4 packaging-26.3 pefile-2024.8.26 pillow-13.0.0 pluggy-1.7.0 pygments-2.21.0 pyinstaller-hooks-contrib-2026.10 pyparsing-3.3.3 pytest-9.2.0 python-dateutil-4.0.0 pywin32-ctypes-0.2.3 setuptools-84.2.1 shiboken6-6.12.0 tzdata-2026.6
+windows-build	Prepare dependencies	2026-11-10T08:10:11.7590974Z 
+windows-build	Prepare dependencies	2026-11-10T08:10:11.7591831Z [notice] A new release of pip is available: 25.0.1 -> 26.3
+windows-build	Prepare dependencies	2026-11-10T08:10:11.7592597Z [notice] To update, run: D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\.venv\Scripts\python.exe -m pip install --upgrade pip
+windows-build	Regression, source and packaged smoke	﻿2026-11-10T08:10:11.9971136Z ##[group]Run .\scripts\build_exe_windows.ps1 -SkipDependencyInstall
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:11.9971495Z ^[[36;1m.\scripts\build_exe_windows.ps1 -SkipDependencyInstall^[[0m
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:12.0061820Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:12.0062050Z env:
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:12.0062223Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:12.0062499Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:12.0062754Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:12.0062990Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:12.0063223Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:12.0063413Z ##[endgroup]
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:20.2254268Z ........................................................................ [ 24%]
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:24.0989330Z ........................................................................ [ 48%]
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:25.1264759Z ........................................................................ [ 72%]
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:25.7286027Z ......s................................................................. [ 96%]
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:25.9772554Z ..........                                                               [100%]
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:25.9773207Z 297 passed, 1 skipped in 12.59s
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:31.6148818Z .........                                                                [100%]
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:31.6149536Z 9 passed in 4.87s
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.5640271Z 123 INFO: PyInstaller: 6.22.3, contrib hooks: 2026.10
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.5646962Z 125 INFO: Python: 3.12.10
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.5889688Z 147 INFO: Platform: Windows-2025Server-10.0.26100-SP0
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.5919312Z 147 INFO: Python environment: D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\.venv
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.5930785Z 149 INFO: wrote D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\outputs\build\MatrixDisplacement.spec
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.5947444Z 149 INFO: Removing temporary files and cleaning cache in C:\Users\runneradmin\AppData\Local\pyinstaller
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.5952171Z 151 INFO: Module search paths (PYTHONPATH):
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.5984960Z ['D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11',
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.5989213Z  'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python312.zip',
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.6001575Z  'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\DLLs',
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.6002648Z  'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\Lib',
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.6004941Z  'C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64',
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.6011306Z  'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv',
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.6041626Z  'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages',
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.6064396Z  'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\scripts',
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.6088646Z  'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11']
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.8493663Z 409 INFO: checking Analysis
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.8494487Z 409 INFO: Building Analysis because Analysis-00.toc is non existent
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.8495080Z 409 INFO: Looking for Python shared library...
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.8495579Z 409 INFO: Using Python shared library: C:\hostedtoolcache\windows\Python\3.12.10\x64\python312.dll
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.8496265Z 409 INFO: Running Analysis Analysis-00.toc
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.8496639Z 411 INFO: Target bytecode optimization level: 0
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.8497011Z 411 INFO: Initializing module dependency graph...
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.8503172Z 411 INFO: Initializing module graph hook caches...
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:34.8585816Z 419 INFO: Analyzing modules for base_library.zip ...
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:35.5956975Z 1156 INFO: Processing standard module hook 'hook-encodings.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:35.8472883Z 1406 INFO: Processing standard module hook 'hook-math.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:35.9762156Z 1537 INFO: Processing standard module hook 'hook-heapq.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:36.5746441Z 2135 INFO: Processing standard module hook 'hook-pickle.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:37.6001855Z 3161 INFO: Caching module dependency graph...
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:37.6240260Z 3184 INFO: Analyzing D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\scripts\gui_launcher.py
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:37.6550942Z 3216 INFO: Processing standard module hook 'hook-numpy.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:37.8511264Z 3411 INFO: Processing pre-safe-import-module hook 'hook-typing_extensions.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:37.8516195Z 3412 INFO: SetuptoolsInfo: initializing cached setuptools info...
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:38.5169843Z 4077 INFO: Processing standard module hook 'hook-platform.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:38.6145137Z 4175 INFO: Processing standard module hook 'hook-sysconfig.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:38.8000724Z 4359 INFO: Processing standard module hook 'hook-webbrowser.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:39.2098456Z 4769 INFO: Processing standard module hook 'hook-_ctypes.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:39.5106057Z 5070 INFO: Processing standard module hook 'hook-difflib.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:39.6478966Z 5208 INFO: Processing standard module hook 'hook-multiprocessing.util.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:39.7230873Z 5284 INFO: Processing standard module hook 'hook-xml.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:40.6268390Z 6188 INFO: Processing standard module hook 'hook-matplotlib.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:40.8194070Z 6380 INFO: Processing pre-safe-import-module hook 'hook-packaging.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:41.0684613Z 6623 INFO: Processing standard module hook 'hook-matplotlib.backend_bases.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:41.1746574Z 6734 INFO: Processing standard module hook 'hook-PIL.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:41.2356320Z 6796 INFO: Processing standard module hook 'hook-PIL.Image.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:41.4628000Z 7023 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:41.6253094Z 7172 INFO: Processing standard module hook 'hook-PIL.ImageFilter.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:42.1424364Z 7703 INFO: Processing standard module hook 'hook-matplotlib.backends.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:42.2105128Z 7770 INFO: Processing standard module hook 'hook-matplotlib.pyplot.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:42.2927959Z 7853 INFO: Processing standard module hook 'hook-matplotlib.figure.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:42.7421454Z 8301 INFO: Processing standard module hook 'hook-dateutil.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:42.7525188Z 8313 INFO: Processing standard module hook 'hook-zoneinfo.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:43.8646618Z 9425 INFO: Processing pre-safe-import-module hook 'hook-gi.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:44.0285794Z 9589 INFO: Processing standard module hook 'hook-PySide6.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:44.1424626Z 9703 INFO: Processing standard module hook 'hook-shiboken6.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:44.2398235Z 9799 INFO: Processing standard module hook 'hook-PySide6.QtNetwork.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:46.0877972Z 11648 INFO: Processing standard module hook 'hook-PySide6.QtCore.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:10:49.8062699Z 15367 INFO: Processing standard module hook 'hook-PySide6.QtGui.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:10.9330612Z 36333 INFO: Processing standard module hook 'hook-PySide6.QtWidgets.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:14.1139094Z 39674 INFO: Processing standard module hook 'hook-matplotlib.backends.backend_qtagg.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:14.1169968Z 39676 INFO: Processing standard module hook 'hook-matplotlib.backends.qt_compat.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:14.1172440Z 39678 INFO: hook-matplotlib.backends.qt_compat: selected 'PySide6' as Qt bindings because hook for 'PySide6' has been run before.
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:14.1222653Z 39682 INFO: Processing standard module hook 'hook-PySide6.QtSvg.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:14.5425100Z 40102 INFO: Processing module hooks (post-graph stage)...
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:14.5487376Z 40108 INFO: Processing standard module hook 'hook-matplotlib.backends.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:14.5490363Z 40108 INFO: Matplotlib backend selection method: automatic discovery of used backends
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:14.7651579Z 40325 INFO: Trying determine the default backend as first importable candidate from the list: ['QtAgg', 'Qt5Agg', 'Gtk4Agg', 'Gtk3Agg', 'TkAgg', 'WxAgg']
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.4183789Z 40978 INFO: Selected matplotlib backends: ['QtAgg']
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.4184463Z 40978 INFO: Extra dists for selected matplotlib backends: []
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.5734353Z 41134 INFO: Processing standard module hook 'hook-PIL.SpiderImagePlugin.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.6289265Z 41189 INFO: Processing standard module hook 'hook-tzdata.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.9155736Z 41476 INFO: Performing binary vs. data reclassification (934 entries)
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.9530565Z 41514 INFO: Looking for ctypes DLLs
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.9723015Z 41531 INFO: Analyzing run-time hooks ...
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.9757765Z 41535 INFO: Including run-time hook 'pyi_rth_mplconfig.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.9768927Z 41537 INFO: Processing pre-find-module-path hook 'hook-_pyi_rth_utils.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\pre_find_module_path'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.9779347Z 41537 INFO: Processing standard module hook 'hook-_pyi_rth_utils.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.9832802Z 41543 INFO: Including run-time hook 'pyi_rth_pkgutil.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.9847252Z 41545 INFO: Including run-time hook 'pyi_rth_multiprocessing.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.9861202Z 41545 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:15.9875235Z 41547 INFO: Including run-time hook 'pyi_rth_pyside6.py' from 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PyInstaller\\hooks\\rthooks'
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:16.0126554Z 41573 INFO: Creating base_library.zip...
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:16.0264439Z 41587 INFO: Looking for dynamic libraries
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:16.7952918Z 42356 INFO: Extra DLL search directories (AddDllDirectory): ['D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\shiboken6', 'D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\numpy.libs']
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:16.7958871Z 42356 INFO: Extra DLL search directories (PATH): ['D:\\a\\MatrixDisplacement\\MatrixDisplacement\\source\\matrix_displacement_v11\\.venv\\Lib\\site-packages\\PySide6']
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:17.5356489Z 43096 INFO: Warnings written to D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\outputs\build\MatrixDisplacement\warn-MatrixDisplacement.txt
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:17.5740859Z 43133 INFO: Graph cross-reference written to D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\outputs\build\MatrixDisplacement\xref-MatrixDisplacement.html
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:17.6045209Z 43165 INFO: checking PYZ
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:17.6046031Z 43165 INFO: Building PYZ because PYZ-00.toc is non existent
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:17.6046923Z 43165 INFO: Building PYZ (ZlibArchive) D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\outputs\build\MatrixDisplacement\PYZ-00.pyz
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2331887Z 43793 INFO: Building PYZ (ZlibArchive) D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\outputs\build\MatrixDisplacement\PYZ-00.pyz completed successfully.
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2486450Z 43809 INFO: checking PKG
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2487212Z 43809 INFO: Building PKG because PKG-00.toc is non existent
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2487728Z 43809 INFO: Building PKG (CArchive) MatrixDisplacement.pkg
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2642093Z 43824 INFO: Building PKG (CArchive) MatrixDisplacement.pkg completed successfully.
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2649225Z 43824 INFO: Bootloader D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\.venv\Lib\site-packages\PyInstaller\bootloader\Windows-64bit-intel\runw.exe
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2650136Z 43824 INFO: checking EXE
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2650537Z 43824 INFO: Building EXE because EXE-00.toc is non existent
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2650938Z 43824 INFO: Building EXE from EXE-00.toc
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2651682Z 43824 INFO: Copying bootloader EXE to D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\outputs\build\MatrixDisplacement\MatrixDisplacement.exe
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2668277Z 43826 INFO: Copying icon to EXE
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2683282Z 43828 INFO: Copying 0 resources to EXE
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2683697Z 43828 INFO: Embedding manifest in EXE
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2696424Z 43830 INFO: Appending PKG archive to EXE
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.2737316Z 43834 INFO: Fixing EXE headers
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.3259177Z 43886 INFO: Building EXE from EXE-00.toc completed successfully.
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.3714979Z 43931 INFO: checking COLLECT
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.3715785Z 43931 INFO: Building COLLECT because COLLECT-00.toc is non existent
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.3719312Z 43931 INFO: Building COLLECT COLLECT-00.toc
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.7965236Z 44356 INFO: Building COLLECT COLLECT-00.toc completed successfully.
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:18.8092510Z 44370 INFO: Build complete! The results are available in: D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\outputs\dist\V1.1.6
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:22.7419052Z 成功构建并完成离屏自检：D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\outputs\dist\V1.1.6\MatrixDisplacement\MatrixDisplacement.exe
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:22.7420541Z 构建验证记录：D:\a\MatrixDisplacement\MatrixDisplacement\source\matrix_displacement_v11\outputs\dist\V1.1.6\MatrixDisplacement\BUILD_VALIDATION.txt
+windows-build	Regression, source and packaged smoke	2026-11-10T08:11:22.7422439Z 仍须按 docs/V1.1_WINDOWS_ACCEPTANCE.md 验证真实窗口、多显示器、恢复流程和分发。
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	﻿2026-11-10T08:11:22.7934329Z ##[group]Run $exe = (Get-ChildItem outputs/dist/V*/MatrixDisplacement/MatrixDisplacement.exe | Select-Object -Last 1).FullName
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7934938Z ^[[36;1m$exe = (Get-ChildItem outputs/dist/V*/MatrixDisplacement/MatrixDisplacement.exe | Select-Object -Last 1).FullName^[[0m
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7935286Z ^[[36;1m$env:PATH = "$env:SystemRoot\System32;$env:SystemRoot"^[[0m
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7935483Z ^[[36;1m$env:PYTHONHOME = $null^[[0m
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7935632Z ^[[36;1m$env:PYTHONPATH = $null^[[0m
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7935785Z ^[[36;1m$env:QT_QPA_PLATFORM = 'offscreen'^[[0m
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7935960Z ^[[36;1mforeach ($scale in @('1.25','1.5')) {^[[0m
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7936125Z ^[[36;1m  $env:QT_SCALE_FACTOR = $scale^[[0m
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7936406Z ^[[36;1m  $process = Start-Process -FilePath $exe -ArgumentList '--self-test' -WindowStyle Hidden -PassThru^[[0m
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7936787Z ^[[36;1m  if (-not $process.WaitForExit(120000)) { $process.Kill(); throw 'Packaged smoke timeout' }^[[0m
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7937167Z ^[[36;1m  if ($process.ExitCode -ne 0) { throw "Packaged smoke failed: $scale" }^[[0m
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7937379Z ^[[36;1m}^[[0m
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7990869Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7991094Z env:
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7991264Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7991541Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7991802Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7992030Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7992263Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+windows-build	Test packaged app with isolated PATH at 125 and 150 percent	2026-11-10T08:11:22.7992456Z ##[endgroup]
+windows-build	Post Run actions/setup-python@v5	﻿2026-11-10T08:11:28.5534036Z Post job cleanup.
+windows-build	Post Run actions/setup-python@v5	2026-11-10T08:11:28.6589076Z (node:6456) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+windows-build	Post Run actions/setup-python@v5	2026-11-10T08:11:28.6590015Z (Use `node --trace-deprecation ...` to show where the warning was created)
+windows-build	Post Run actions/checkout@v4	﻿2026-11-10T08:11:28.6859749Z Post job cleanup.
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:28.8068913Z [command]"C:\Program Files\Git\bin\git.exe" version
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:28.8355215Z git version 2.56.0.windows.4
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:28.8432774Z Temporarily overriding HOME='D:\a\_temp\9f2e4e73-fad4-45d7-8c66-313ab1b953b6' before making global git config changes
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:28.8433510Z Adding repository directory to the temporary git global config as a safe directory
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:28.8440324Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\MatrixDisplacement\MatrixDisplacement
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:28.8864370Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:28.9295658Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:29.4347278Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:29.4653971Z http.https://github.com/.extraheader
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:29.4745253Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:29.5072490Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:29.9875831Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+windows-build	Post Run actions/checkout@v4	2026-11-10T08:11:30.0159976Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+windows-build	Complete job	﻿2026-11-10T08:11:30.4936884Z Cleaning up orphan processes
+windows-build	Complete job	2026-11-10T08:11:30.5002320Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

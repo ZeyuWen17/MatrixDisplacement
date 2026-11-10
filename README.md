@@ -1,5 +1,9 @@
 # 结构力学 · 矩阵位移法教学系统
 
+## 当前发布状态（2026-11-10）
+
+V1.1.6 已构建，近期三项导出优化全部可在新版 EXE 使用。完整测试 297 通过、1 跳过；GUI 专项 9 通过。详见[新版验收记录](source/matrix_displacement_v11/docs/V1.1.6_VALIDATION.md)。下文 V1.1.5 和“尚未重建”描述为早期阶段记录，以本段为准。数百杆件建议先隐藏内力数值标注。
+
 ## GitHub 备份（2026-11-10）
 
 已按要求清理本地旧版本：删除 V1.1～V1.1.4 历史归档及 4 个旧程序目录，释放约 957.5 MiB。本地程序仅保留 V1.1.5；历史版本从下方 GitHub Releases 下载。删除前已重新核对 12 个远端附件的 SHA256。源码、示例、验收记录和 Git 工作副本保留。
@@ -9,7 +13,7 @@
 - [历史发布附件](https://github.com/ZeyuWen17/MatrixDisplacement/releases)：V1.1 仅源码；V1.1.1～V1.1.4 保留原有源码和 Windows ZIP；V1.1.5 本轮仅发布源码，没有新建 ZIP。
 - 上传用独立 Git 工作副本位于 `source/matrix_displacement_v11/outputs/github/MatrixDisplacement`。日常源码修改不会自动同步，需要显式更新并推送。
 
-当前版本：V1.1.5。目录整理日期：2026-11-07。
+当前版本：V1.1.6。目录整理日期：2026-11-07。
 
 使用说明核对日期：2026-11-08。
 
@@ -68,7 +72,7 @@ py -3.12 -m venv .venv
 **方式一：使用本机已构建的 Windows 程序。** 以下路径仅适用于开发电脑已有文件，不是 GitHub 下载入口。打开文件夹，双击 `MatrixDisplacement.exe`：
 
 ```text
-source/matrix_displacement_v11/outputs/dist/V1.1.5/MatrixDisplacement/
+source/matrix_displacement_v11/outputs/dist/V1.1.6/MatrixDisplacement/
 ```
 
 EXE 旁的 `_internal` 文件夹是运行所需依赖，不能删除，也不能只复制 EXE 到其他位置。
@@ -242,7 +246,7 @@ EXE 旁的 `_internal` 文件夹是运行所需依赖，不能删除，也不能
 
 在源码目录运行 `.\.venv\Scripts\python.exe -m matrix_displacement.gui` 可启动源码版。打包程序必须保留其完整目录和 `_internal`。
 
-目录名保留 `matrix_displacement_v11` 以维持虚拟环境路径；实际包版本为 1.1.5。高 DPI、多显示器及跨电脑验收仍待完成。
+目录名保留 `matrix_displacement_v11` 以维持虚拟环境路径；实际包版本为 1.1.6。高 DPI、多显示器及跨电脑验收仍待完成。
 
 ## 示例效果
 
@@ -261,5 +265,6 @@ EXE 旁的 `_internal` 文件夹是运行所需依赖，不能删除，也不能
 5. 核对远端提交和文档链接。日常修订更新 main，不移动已发布版本标签；只有发布新版本时才新增标签和 Release。
 
 如果是直接从 GitHub 克隆的开发目录，可在该克隆内开发和推送，无需再维护第二份工作副本。
+
 
 
