@@ -2,7 +2,7 @@
 
 用于结构力学课程学习的二维结构建模与线弹性静力分析程序。基于 Python、NumPy、Matplotlib 和 PySide6，支持连续梁、平面桁架、平面刚架及刚架—桁架混合模型。
 
-当前源码版本：**V1.1.7**。提供图形建模、矩阵组装过程、内力与变形结果，方便将教材计算步骤与数值结果对照。
+当前源码版本：**V1.1.8**。提供图形建模、矩阵组装过程、内力与变形结果，方便将教材计算步骤与数值结果对照。
 
 ## 主要功能
 
@@ -19,13 +19,14 @@
 
 ### Windows 免安装包（推荐）
 
-**[下载 V1.1.7 Windows x64 免安装版](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.7/MatrixDisplacement_V1.1.7_Windows.zip)** · [发布说明与校验文件](https://github.com/ZeyuWen17/MatrixDisplacement/releases/tag/v1.1.7)
+**[下载 V1.1.8 Windows x64 免安装版](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.8/MatrixDisplacement_V1.1.8_Windows.zip)** · [发布说明与校验文件](https://github.com/ZeyuWen17/MatrixDisplacement/releases/tag/v1.1.8)
 
 无需单独安装 Python。下载后**解压整个 ZIP**，打开 `MatrixDisplacement` 文件夹，双击 `MatrixDisplacement.exe`。必须保留 `_internal` 文件夹，不能只复制 EXE，也不要直接从压缩包预览窗口运行。
 
 | 版本 | Windows 免安装包 | 说明 |
 | --- | --- | --- |
-| **V1.1.7（推荐）** | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.7/MatrixDisplacement_V1.1.7_Windows.zip) | 后台求解、按需绘图、错误定位 |
+| **V1.1.8（推荐）** | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.8/MatrixDisplacement_V1.1.8_Windows.zip) | 支座约束符号与给定位移显示 |
+| V1.1.7 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.7/MatrixDisplacement_V1.1.7_Windows.zip) | 后台求解、按需绘图、错误定位 |
 | V1.1.6 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.6/MatrixDisplacement_V1.1.6_Windows.zip) | 导出体验与四图批量导出 |
 | V1.1.5 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.5/MatrixDisplacement_V1.1.5_Windows.zip) | 内力标注与布局优化 |
 | V1.1.4 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.4/MatrixDisplacement_V1.1.4_Windows.zip) | 历史版本 |
@@ -35,7 +36,7 @@
 
 V1.1 仅保留源码归档。完整版本说明及附件见 [Releases](https://github.com/ZeyuWen17/MatrixDisplacement/releases)。页面中的 **Source code (zip/tar.gz)** 是源码，不是免安装程序。
 
-V1.1.5～V1.1.7 包含运行说明，发布页附 SHA256 校验文件及解压自检记录。可在 PowerShell 使用 `Get-FileHash .\MatrixDisplacement_V1.1.7_Windows.zip -Algorithm SHA256` 核对下载文件。
+V1.1.5～V1.1.8 包含运行说明，发布页附 SHA256 校验文件及解压自检记录。可在 PowerShell 使用 `Get-FileHash .\MatrixDisplacement_V1.1.8_Windows.zip -Algorithm SHA256` 核对下载文件。
 
 ### 运行最新源码（Windows）
 
@@ -86,3 +87,5 @@ powershell -ExecutionPolicy Bypass -File scripts/build_exe_windows.ps1
 - [V1.1.6 验收记录](source/matrix_displacement_v11/docs/V1.1.6_VALIDATION.md)
 - [V1.1.7 优化与验收记录](source/matrix_displacement_v11/docs/V1.1.7_VALIDATION.md)
 - [需求与开发进度](source/matrix_displacement_v11/任务单.md)
+
+支座符号及约束含义见[使用指南](source/matrix_displacement_v11/docs/USER_GUIDE.md#如何识别支座符号)，新版验证见[V1.1.8 验收记录](source/matrix_displacement_v11/docs/V1.1.8_VALIDATION.md)。

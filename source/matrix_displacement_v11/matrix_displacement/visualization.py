@@ -82,14 +82,30 @@ def _base(model, ax, *, show_node_ids=True):
     if show_node_ids:
         for n in model.nodes.values():
             ax.annotate(str(n.id), (n.x,n.y),xytext=(4,4),textcoords='offset points',fontsize=8)
-    fixed_nodes = {
-        nid for nid in model.nodes
-        if all((nid,d) in model.constraints for d in ('ux','uy','rz'))
-    }
-    if fixed_nodes:
-        ax.scatter([model.nodes[n].x for n in fixed_nodes],
-                   [model.nodes[n].y for n in fixed_nodes],
-                   marker='s',facecolors='none',edgecolors='0.2',s=70,zorder=4)
+    from .supports import support_symbol
+    from matplotlib.offsetbox import AnnotationBbox, DrawingArea
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Polygon, Circle
+    for nid,node in model.nodes.items():
+        support=support_symbol(model,nid)
+        if support is None:continue
+        area=DrawingArea(64,64)
+        color='#b45309' if support.prescribed else '#334155'
+        def point(x,y):return (x+24,32-y)
+        for x1,y1,x2,y2 in support.lines:
+            a,b=point(x1,y1),point(x2,y2)
+            area.add_artist(Line2D([a[0],b[0]],[a[1],b[1]],color=color,lw=1.2))
+        for points in support.polygons:
+            area.add_artist(Polygon([point(x,y) for x,y in points],edgecolor=color,facecolor='none' if len(points)==4 else 'white',lw=1.2))
+        for x,y,r in support.circles:
+            area.add_artist(Circle(point(x,y),r,edgecolor=color,facecolor='white',lw=1.2))
+        artist=AnnotationBbox(area,(node.x,node.y),frameon=False,box_alignment=(24/64,32/64),pad=0)
+        artist.set_gid(f'support:{nid}')
+        artist.set_zorder(4)
+        ax.add_artist(artist)
+        if support.prescribed:
+            ax.annotate(support.detail,(node.x,node.y),xytext=(12,-36),
+                        textcoords='offset points',fontsize=7,color=color)
     ax.set_aspect('equal', adjustable='datalim')
     ax.set_xlabel('Global X (m)')
     ax.set_ylabel('Global Y (m)')

@@ -36,6 +36,7 @@ from matrix_displacement.exporting import export_results_csv
 from matrix_displacement.visualization import plot_force_diagram, plot_deformed_shape
 from matrix_displacement.recovery import RecoveryStore
 from matrix_displacement.file_revision import FileRevision
+from matrix_displacement.supports import support_symbol
 
 # QGraphicsScene pixels per metre; scene Y is reversed for positive global Y.
 PIXELS_PER_METRE = 65.0
@@ -490,18 +491,26 @@ class ModelCanvas(QGraphicsView):
             sc.addEllipse(p.x()-4.5,p.y()-4.5,9,9,
                           QPen(QColor('#0f172a'),1),QBrush(QColor('white')))
             add_label(f'{nid}', '#0f172a', 1.0, p.x(), p.y(), 8, 5)
-            fixed=[d for d in ('ux','uy','rz') if (nid,d) in model.constraints]
-            if fixed:
-                if set(fixed)=={'ux','uy','rz'}:
-                    pen=QPen(QColor('#475569'),1.4)
-                    wall=sc.addLine(p.x()-7,p.y()-15,p.x()-7,p.y()+15,pen)
-                    wall.setToolTip('固定支座：ux / uy / rz')
-                    for offset in range(-15,16,6):
-                        sc.addLine(p.x()-7,p.y()+offset,p.x()-14,p.y()+offset+5,pen)
-                else:
-                    tri=QPolygonF([QPointF(p.x()-9,p.y()+15),QPointF(p.x()+9,p.y()+15),QPointF(p.x(),p.y()+3)])
-                    sc.addPolygon(tri,QPen(QColor('#475569'),1.4),QBrush(QColor('#e2e8f0')))
-                add_label('/'.join(fixed), '#475569', .75, p.x(), p.y(), -9, 13)
+            support=support_symbol(model,nid)
+            if support:
+                color='#b45309' if support.prescribed else '#334155'
+                pen=QPen(QColor(color),1.6)
+                tooltip=support.name+'\n'+support.detail
+                items=[]
+                for x1,y1,x2,y2 in support.lines:
+                    items.append(sc.addLine(p.x()+x1,p.y()+y1,p.x()+x2,p.y()+y2,pen))
+                for points in support.polygons:
+                    items.append(sc.addPolygon(QPolygonF([QPointF(p.x()+x,p.y()+y) for x,y in points]),
+                                               pen,QBrush(QColor('transparent' if len(points)==4 else '#f8fafc'))))
+                for x,y,r in support.circles:
+                    items.append(sc.addEllipse(p.x()+x-r,p.y()+y-r,2*r,2*r,pen,QBrush(QColor('white'))))
+                for item in items:
+                    item.setToolTip(tooltip)
+                    rect=item.sceneBoundingRect()
+                    obstacles.append((rect.left(),rect.top(),rect.right(),rect.bottom()))
+                text=support.name+'\n'+support.detail
+                if support.prescribed:text='给定位移 · '+text
+                add_label(text,color,.68,p.x(),p.y(),-15,32,tooltip=tooltip)
             fx,fy,mz=(model.loads.get((nid,d),0.) for d in ('ux','uy','rz'))
             for value,vx,vy,name in ((fx,1,0,'Fx'),(fy,0,-1,'Fy')):
                 if value:

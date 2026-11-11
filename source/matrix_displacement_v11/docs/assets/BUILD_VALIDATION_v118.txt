@@ -1,0 +1,6 @@
+MatrixDisplacement V1.1.8 - Windows build validation
+Validated at: 2026-11-11T15:01:28.1586703+08:00
+Packaged --self-test: PASS (Qt offscreen + solver + plots + recovery)
+EXE SHA256: 9BD1238B2C498D69B85A3E6E6F710AFD9F35E749F893D0B5407017EE93B597E1
+Full regression run: PASS
+Manual GUI mouse/DPI/other-PC tests: NOT YET VERIFIED
