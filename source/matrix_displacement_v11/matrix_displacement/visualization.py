@@ -31,6 +31,9 @@ def _install_force_label_layout(ax, labels):
     from .label_layout import LabelRequest, place_labels
 
     class ForceLabelLayout(Artist):
+        _layout_key = None
+        _placements = None
+
         def draw(self, renderer):
             requests=[]
             factor=renderer.points_to_pixels(1)
@@ -47,7 +50,14 @@ def _install_force_label_layout(ax, labels):
                 if text not in labels:
                     box=text.get_window_extent(renderer)
                     obstacles.append((box.x0,box.y0,box.x1,box.y1))
-            for label,req,(x,y) in zip(labels,requests,place_labels(requests,obstacles)):
+            # Reuse only an identical display-space layout. DPI, transforms,
+            # text extents and obstacles all participate in invalidation.
+            key=(factor, tuple((r.anchor_x,r.anchor_y,r.width,r.height,r.preferred_x,r.preferred_y)
+                               for r in requests), tuple(obstacles))
+            if key != self._layout_key:
+                self._placements=place_labels(requests,obstacles)
+                self._layout_key=key
+            for label,req,(x,y) in zip(labels,requests,self._placements):
                 # Requests use text bounds; retain baseline offset in points.
                 label.set_position((8+(x-req.anchor_x-req.preferred_x)/factor,
                                     18+(y-req.anchor_y-req.preferred_y)/factor))

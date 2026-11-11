@@ -45,3 +45,39 @@ def test_dense_frame_labels_resize_and_export(tmp_path):
         fig.savefig(tmp_path/'dense.png',dpi=160,bbox_inches='tight')
     finally:
         plt.close(fig)
+
+
+def test_layout_cache_invalidates_for_geometry_text_and_export(monkeypatch,tmp_path):
+    from matrix_displacement import label_layout
+    calls=[]
+    original=label_layout.place_labels
+    def tracked(*args,**kwargs):
+        calls.append(1)
+        return original(*args,**kwargs)
+    monkeypatch.setattr(label_layout,'place_labels',tracked)
+    model=portal_grid()
+    ax=plot_force_diagram(model,LinearStaticSolver().solve(model),'M')
+    fig=ax.figure
+    try:
+        fig.canvas.draw()
+        count=len(calls)
+        assert count>0
+        fig.canvas.draw()
+        assert len(calls)==count
+        fig.set_size_inches(11,8)
+        fig.canvas.draw()
+        assert len(calls)>count
+        count=len(calls)
+        label=next(t for t in ax.texts if t.get_text().startswith('E'))
+        label.set_fontsize(label.get_fontsize()+4)
+        fig.canvas.draw()
+        assert len(calls)>count
+        count=len(calls)
+        fig.savefig(tmp_path/'different-dpi.png',dpi=160,bbox_inches='tight')
+        assert len(calls)>count
+        fig.canvas.draw()
+        count=len(calls)
+        fig.canvas.draw()
+        assert len(calls)==count
+    finally:
+        plt.close(fig)

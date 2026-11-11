@@ -12,7 +12,7 @@ from .visualization import (
     plot_member_section_diagram,
 )
 
-__version__ = '1.1.6'
+__version__ = '1.1.7'
 
 from .io import model_to_dict, model_from_dict, save_model_json, load_model_json
 from .reporting import render_teaching_report, save_teaching_report

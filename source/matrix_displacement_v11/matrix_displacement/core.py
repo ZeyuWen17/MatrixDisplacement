@@ -30,22 +30,40 @@ def _finite_array(array, name):
     return array
 
 
-def _check_reduced_stiffness(Kff):
+class StabilityError(ValueError):
+    """Numerical instability with inspectable node/DOF locations."""
+    def __init__(self, message, dofs=(), *, suspected=False):
+        super().__init__(message)
+        self.dofs = tuple(dofs)
+        self.node_ids = tuple(sorted({node for node, _ in self.dofs}))
+        self.suspected = suspected
+
+
+def _check_reduced_stiffness(Kff, dof_keys=()):
     """Check typical mechanisms and extreme numerical near-singularity."""
     if Kff.size == 0:
         return
     _finite_array(Kff, 'Stiffness matrix')
     diag = np.diag(Kff)
     if np.any(diag <= 0):
-        raise ValueError('Singular stiffness matrix: non-positive diagonal; check constraints and disconnected nodes')
+        locations = [dof_keys[i] for i in np.flatnonzero(diag <= 0)] if dof_keys else []
+        raise StabilityError('Singular stiffness matrix: non-positive diagonal; check constraints and disconnected nodes', locations)
     scale = np.sqrt(diag)
     normalized = (Kff / scale[:, None]) / scale[None, :]
     normalized = 0.5 * (normalized + normalized.T)
     eigenvalues = np.linalg.eigvalsh(normalized)
     if not np.all(np.isfinite(eigenvalues)) or eigenvalues[0] <= MIN_NORMALIZED_EIGENVALUE:
-        raise ValueError(
+        locations = []
+        if dof_keys and np.all(np.isfinite(eigenvalues)):
+            # Inspect the normalized near-null mode only after stability failed.
+            # These are investigation candidates, not a unique physical cause.
+            _, vectors = np.linalg.eigh(normalized)
+            weights = np.abs(vectors[:, 0])
+            indices = np.argsort(-weights)
+            locations = [dof_keys[i] for i in indices[:8] if weights[i] >= .2 * weights.max()]
+        raise StabilityError(
             'Singular or near-singular stiffness matrix: check supports, mechanisms, '
-            'disconnected nodes, and extreme stiffness ratios'
+            'disconnected nodes, and extreme stiffness ratios', locations, suspected=True
         )
 
 
@@ -668,7 +686,8 @@ class LinearStaticSolver:
         _finite_array(K, 'Global stiffness matrix')
         _finite_array(rhs, 'Reduced right-hand side')
         if free.size:
-            _check_reduced_stiffness(Kff)
+            keys = {index: key for key, index in dm.mapping.items()}
+            _check_reduced_stiffness(Kff, [keys[index] for index in free])
             try:
                 d[free] = np.linalg.solve(Kff, rhs)
             except np.linalg.LinAlgError as exc:

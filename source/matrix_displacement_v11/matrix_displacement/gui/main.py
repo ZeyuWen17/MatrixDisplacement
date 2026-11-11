@@ -6,10 +6,11 @@ embedded Matplotlib figures. All numerical inputs are SI units.
 """
 import math
 import sys
+from copy import deepcopy
 from pathlib import Path
 from matrix_displacement import __version__
 
-from PySide6.QtCore import Qt, QRect, QRectF, QLineF, QPointF, Signal, QTimer
+from PySide6.QtCore import Qt, QRect, QRectF, QLineF, QPointF, Signal, QTimer, QThread
 from PySide6.QtGui import QAction, QColor, QPen, QBrush, QPainter, QPolygonF, QFont, QFontDatabase
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QGraphicsView, QGraphicsScene,
@@ -17,7 +18,7 @@ from PySide6.QtWidgets import (
     QPlainTextEdit, QLabel, QPushButton, QComboBox, QCheckBox, QLineEdit,
     QFileDialog, QMessageBox, QDialog, QDialogButtonBox, QButtonGroup,
     QScrollArea, QSizePolicy, QTableWidget, QTableWidgetItem,
-    QHeaderView, QDoubleSpinBox, QRubberBand, QInputDialog,
+    QHeaderView, QDoubleSpinBox, QRubberBand, QInputDialog, QProgressBar, QToolBar,
 )
 
 from matrix_displacement.editor import ModelEditor, _real
@@ -28,7 +29,8 @@ from matrix_displacement.diagnostics import explain_error
 from matrix_displacement.selection import select_in_rectangle, apply_selection
 from matrix_displacement.label_layout import LabelRequest, place_labels
 from matrix_displacement.core import UniformLoad2D, LinearLoad2D, PointLoad2D
-from matrix_displacement.core import Frame2D, Beam2D, Truss2D, Mode
+from matrix_displacement.core import Frame2D, Beam2D, Truss2D, Mode, LinearStaticSolver
+from matrix_displacement.io import model_to_dict
 from matrix_displacement.reporting import save_teaching_report
 from matrix_displacement.exporting import export_results_csv
 from matrix_displacement.visualization import plot_force_diagram, plot_deformed_shape
@@ -39,6 +41,22 @@ from matrix_displacement.file_revision import FileRevision
 PIXELS_PER_METRE = 65.0
 NODE_HIT_PIXELS = 12.0
 ELEMENT_HIT_PIXELS = 10.0
+
+
+class SolveThread(QThread):
+    """Numerical work only; Qt and Matplotlib stay on the GUI thread."""
+    def __init__(self, model, mode, parent=None):
+        super().__init__(parent)
+        self.model = model
+        self.mode = mode
+        self.result = None
+        self.error = None
+
+    def run(self):
+        try:
+            self.result = LinearStaticSolver(self.mode).solve(self.model)
+        except Exception as exc:
+            self.error = exc
 
 
 def _point(node):
@@ -563,6 +581,9 @@ class MainWindow(QMainWindow):
         self.pending_node=None
         self.tool='select'
         self.figures={}
+        self._figure_modes={}
+        self._solve_thread=None
+        self._solve_cancelled=False
         self.show_dimensions = True
         self.setMinimumSize(1080,700)
         self.resize(1400,840)
@@ -599,7 +620,7 @@ class MainWindow(QMainWindow):
         action(examples,'两跨连续梁',lambda:self.load_example('continuous_beam'))
         action(examples,'三角形平面桁架',lambda:self.load_example('truss'))
         analyze=self.menuBar().addMenu('分析与导出')
-        action(analyze,'运行分析',self.solve,'Ctrl+R')
+        action(analyze,'运行分析',self.start_solve,'Ctrl+R')
         action(analyze,'导出教学报告',self.export_report)
         action(analyze,'导出 CSV 数据',self.export_csv)
         action(analyze,'保存当前结果图',self.export_figure)
@@ -724,10 +745,10 @@ class MainWindow(QMainWindow):
         toolbar.addAction('保存',lambda:self.save_model())
         toolbar.addSeparator()
         toolbar.addWidget(self.mode_combo)
-        toolbar.addAction('计算并显示结果（Ctrl+R）',self.solve)
+        toolbar.addAction('计算并显示结果（Ctrl+R）',self.start_solve)
         solve_btn=QPushButton('▶ 计算并显示结果')
         solve_btn.setStyleSheet('font-weight:600; min-height:30px;')
-        solve_btn.clicked.connect(self.solve)
+        solve_btn.clicked.connect(self.start_solve)
         sv.addWidget(solve_btn)
         rep_btn=QPushButton('导出教学计算报告 (.md)')
         rep_btn.clicked.connect(self.export_report);sv.addWidget(rep_btn)
@@ -779,20 +800,49 @@ class MainWindow(QMainWindow):
         self.force_labels.setCurrentIndex(2)
         labels_bar.addWidget(self.force_labels)
         self.force_labels.currentIndexChanged.connect(self._refresh_force_labels)
+        self.result_tabs.currentChanged.connect(self._show_result_figure)
+        self.solve_progress=QProgressBar()
+        self.solve_progress.setRange(0,0)
+        self.solve_progress.setMaximumWidth(160)
+        self.statusBar().addPermanentWidget(self.solve_progress)
+        self.cancel_solve_button=QPushButton('取消本次计算')
+        self.cancel_solve_button.clicked.connect(self.cancel_solve)
+        self.statusBar().addPermanentWidget(self.cancel_solve_button)
+        self.solve_progress.hide()
+        self.cancel_solve_button.hide()
 
     def _refresh_force_labels(self, *args):
         if self.result is None:
             return
-        for title,component in (('轴力 N','N'),('剪力 V','V'),('弯矩 M','M')):
-            figure=self.figures.get(title)
-            if figure is None:
-                continue
-            figure.clear()
-            plot_force_diagram(self.editor.model,self.result,component,
-                               ax=figure.add_subplot(111),interactive=True,
-                               value_mode=self.force_labels.currentData())
-            figure.tight_layout()
-            figure.canvas.draw_idle()
+        self._show_result_figure()
+
+    def _show_result_figure(self, *args):
+        if self.result is None:
+            return
+        title=self.result_tabs.tabText(self.result_tabs.currentIndex())
+        if title in self.figures:
+            try:
+                self._ensure_figure(title)
+            except Exception as exc:
+                self._error(exc)
+
+    def _ensure_figure(self, title):
+        figure=self.figures[title]
+        mode=self.force_labels.currentData() if title!='变形图' else 'deformed'
+        if self._figure_modes.get(title)==mode:
+            return figure
+        figure.clear()
+        ax=figure.add_subplot(111)
+        if title=='变形图':
+            plot_deformed_shape(self.editor.model,self.result,ax=ax)
+        else:
+            component={'轴力 N':'N','剪力 V':'V','弯矩 M':'M'}[title]
+            plot_force_diagram(self.editor.model,self.result,component,ax=ax,
+                               interactive=True,value_mode=mode)
+        figure.tight_layout()
+        self._figure_modes[title]=mode
+        figure.canvas.draw_idle()
+        return figure
 
     def _update_history_actions(self):
         self.undo_action.setEnabled(self.history.can_undo)
@@ -1126,6 +1176,8 @@ class MainWindow(QMainWindow):
 
     def _reset_results(self):
         self.figures.clear()
+        self._figure_modes.clear()
+        self.result_tabs.blockSignals(True)
         while self.result_tabs.count():
             old_page=self.result_tabs.widget(0)
             self.result_tabs.removeTab(0)
@@ -1136,6 +1188,7 @@ class MainWindow(QMainWindow):
         self.summary.setPlainText('模型尚未计算，或已修改。请点击“计算并显示结果”。')
         self.result_tabs.addTab(self.summary,'数值结果')
         self.inspect_text=None
+        self.result_tabs.blockSignals(False)
 
     def _update_title(self):
         label=str(self.file_path.name) if self.file_path else '未命名模型'
@@ -1414,6 +1467,10 @@ class MainWindow(QMainWindow):
         return True
 
     def closeEvent(self,event):
+        if self._solve_thread is not None:
+            self.statusBar().showMessage('计算仍在结束中，请稍后关闭；可先取消本次结果。')
+            event.ignore()
+            return
         if self._maybe_save():
             self._autosave_debounce.stop()
             self._autosave_periodic.stop()
@@ -1543,16 +1600,88 @@ class MainWindow(QMainWindow):
             'overwrite' if dialog.clickedButton() is overwrite else 'cancel')
 
     def solve(self):
+        """Synchronous entry for scripts/self-test; UI actions use start_solve."""
+        if self._solve_thread is not None:
+            return
         try:
             mode=Mode(self.mode_combo.currentData())
             self.result=self.editor.solve(mode)
             self._render_results()
             self.main_tabs.setCurrentIndex(1)
-            self.statusBar().showMessage(f'{mode.value} 分析完成；结果表格和内力图已生成。',8000)
+            self.statusBar().showMessage('分析完成；切换图形标签时生成对应结果图。',8000)
         except Exception as exc:
             self.result=None
             self._reset_results()
-            self._error(exc)
+            self._show_solve_error(exc)
+
+    def _show_solve_error(self, exc):
+        nodes=set(getattr(exc,'node_ids',())) & set(self.editor.model.nodes)
+        if nodes:
+            self.selection={('node',n) for n in nodes}
+            self.selected=('node',min(nodes))
+            self.main_tabs.setCurrentIndex(0)
+            self._redraw()
+            self.canvas.fit_all()
+        self._error(exc)
+
+    def _set_solve_busy(self, busy):
+        self.centralWidget().setEnabled(not busy)
+        self.menuBar().setEnabled(not busy)
+        for toolbar in self.findChildren(QToolBar):
+            toolbar.setEnabled(not busy)
+        self.solve_progress.setVisible(busy)
+        self.cancel_solve_button.setVisible(busy)
+        self.cancel_solve_button.setEnabled(busy)
+
+    def start_solve(self):
+        if self._solve_thread is not None:
+            return
+        try:
+            snapshot=deepcopy(self.editor.model)
+            self._solve_snapshot=model_to_dict(snapshot)
+            thread=SolveThread(snapshot,Mode(self.mode_combo.currentData()),self)
+        except Exception as exc:
+            self._show_solve_error(exc)
+            return
+        self.result=None
+        self._reset_results()
+        self._solve_cancelled=False
+        self._solve_thread=thread
+        thread.finished.connect(self._finish_solve)
+        self._set_solve_busy(True)
+        self.statusBar().showMessage('正在计算，窗口可响应；取消后将丢弃结果并等待当前求解结束。')
+        thread.start()
+
+    def cancel_solve(self):
+        if self._solve_thread is not None:
+            self._solve_cancelled=True
+            self.cancel_solve_button.setEnabled(False)
+            self.statusBar().showMessage('已取消本次结果，等待当前数值求解安全结束…')
+
+    def _finish_solve(self):
+        thread=self._solve_thread
+        if thread is None:
+            return
+        self._solve_thread=None
+        self._set_solve_busy(False)
+        try:
+            if self._solve_cancelled:
+                self.statusBar().showMessage('本次计算已取消。',8000)
+            elif model_to_dict(self.editor.model)!=self._solve_snapshot:
+                self.statusBar().showMessage('模型已变化，已丢弃旧计算结果，请重新计算。',8000)
+            elif thread.error is not None:
+                self._show_solve_error(thread.error)
+            else:
+                self.result=thread.result
+                self._render_results()
+                self.main_tabs.setCurrentIndex(1)
+                self.statusBar().showMessage('分析完成；切换图形标签时生成对应结果图。',8000)
+        except Exception as exc:
+            self.result=None
+            self._reset_results()
+            self._show_solve_error(exc)
+        finally:
+            thread.deleteLater()
 
     def _render_results(self):
         from matplotlib.figure import Figure
@@ -1573,22 +1702,13 @@ class MainWindow(QMainWindow):
             lines.append(f'{eid:>5}: '+', '.join(f'{x:.8g}' for x in force))
         self.summary.setPlainText('\n'.join(lines))
         self._build_inspector()
-        for title,plotter in (
-            ('轴力 N',lambda ax:plot_force_diagram(model,result,'N',ax=ax,interactive=True)),
-            ('剪力 V',lambda ax:plot_force_diagram(model,result,'V',ax=ax,interactive=True)),
-            ('弯矩 M',lambda ax:plot_force_diagram(model,result,'M',ax=ax,interactive=True)),
-            ('变形图',lambda ax:plot_deformed_shape(model,result,ax=ax)),
-        ):
+        for title in ('轴力 N','剪力 V','弯矩 M','变形图'):
             figure=Figure(figsize=(8,6),dpi=100)
-            ax=figure.add_subplot(111)
-            plotter(ax)
-            figure.tight_layout()
             canvas=FigureCanvasQTAgg(figure)
             if title in ('轴力 N','剪力 V','弯矩 M'):
                 canvas.mpl_connect('pick_event',self._on_diagram_pick)
             self.result_tabs.addTab(canvas,title)
             self.figures[title]=figure
-        self._refresh_force_labels()
 
     def _on_diagram_pick(self,event):
         """Query a picked Matplotlib force trace at its actual sample station."""
@@ -1656,12 +1776,12 @@ class MainWindow(QMainWindow):
         self.inspect_text.setReadOnly(True)
         layout.addWidget(self.inspect_text)
         self.result_tabs.addTab(page,'杆件截面查询')
-        self._inspection_element_changed()
+        self._inspection_element_changed(select=False)
 
-    def _inspection_element_changed(self,*args):
+    def _inspection_element_changed(self,*args,select=True):
         if self.result is None or self.inspect_element_box.count()==0:return
         eid=self.inspect_element_box.currentData()
-        if self.selected != ('element',eid):
+        if select and self.selected != ('element',eid):
             self.selected=('element',eid)
             self.selection={self.selected}
             self._redraw()
@@ -1785,7 +1905,7 @@ class MainWindow(QMainWindow):
             prefix=f'{self.file_path.stem}_' if self.file_path else ''
             directory=self._new_export_directory(path,prefix+'result_figures')
             for title in titles:
-                self.figures[title].savefig(directory/f'{prefix}{title}.png',dpi=160,bbox_inches='tight')
+                self._ensure_figure(title).savefig(directory/f'{prefix}{title}.png',dpi=160,bbox_inches='tight')
                 completed+=1
             self._export_directory=Path(path).resolve()
             self.statusBar().showMessage(f'全部 4 张结果图已导出至：{directory}',10000)
@@ -1803,7 +1923,7 @@ class MainWindow(QMainWindow):
         path,_=QFileDialog.getSaveFileName(self,'保存结果图',self._export_default_file(f'{key}.png'),'PNG 图片 (*.png)')
         if not path:return
         try:
-            self.figures[key].savefig(path,dpi=160,bbox_inches='tight')
+            self._ensure_figure(key).savefig(path,dpi=160,bbox_inches='tight')
             self._export_directory=Path(path).resolve().parent
             self.statusBar().showMessage(f'已保存结果图：{path}',7000)
         except Exception as exc:self._error(exc)
@@ -1839,7 +1959,7 @@ def main(argv=None):
                     app.processEvents()
                     if window.result is not solved:
                         raise RuntimeError('Label mode changed the analysis result')
-                    figure=window.figures['弯矩 M']
+                    figure=window._ensure_figure('弯矩 M')
                     labels=[t for t in figure.axes[0].texts if t.get_text().startswith('E')]
                     if bool(labels)!=(mode!='none'):
                         raise RuntimeError('Label mode did not update the diagram')

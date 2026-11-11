@@ -168,7 +168,7 @@ def test_force_label_modes_preserve_solution_and_export(app_and_recovery, tmp_pa
             w.force_labels.setCurrentIndex(w.force_labels.findData(mode))
             assert w.result is result
             for title in ('轴力 N','剪力 V','弯矩 M'):
-                fig=w.figures[title]
+                fig=w._ensure_figure(title)
                 labels=[t for t in fig.axes[0].texts if t.get_text().startswith('E')]
                 assert bool(labels)==(mode!='none')
                 if mode=='extrema':

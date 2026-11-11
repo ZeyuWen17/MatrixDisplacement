@@ -1,0 +1,24 @@
+[
+  {
+    "elements": 55,
+    "mode": "all",
+    "solve_and_summary_s": 0.0284,
+    "first_moment_plot_s": 0.9139,
+    "cached_redraw_s": [
+      0.4669,
+      0.4677,
+      0.4729
+    ]
+  },
+  {
+    "elements": 310,
+    "mode": "all",
+    "solve_and_summary_s": 0.2745,
+    "first_moment_plot_s": 7.7547,
+    "cached_redraw_s": [
+      2.5818,
+      2.5899,
+      2.5779
+    ]
+  }
+]

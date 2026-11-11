@@ -40,7 +40,7 @@ def test_pick_force_diagram_opens_member_inspector(app):
     window = MainWindow()
     try:
         window.solve()
-        figure = window.figures['剪力 V']
+        figure = window._ensure_figure('剪力 V')
         line = next(l for l in figure.axes[0].lines
                     if l.get_gid() == 'md-member:1:V')
         artist_index = min(range(len(line.get_xdata())),

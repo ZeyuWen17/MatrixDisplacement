@@ -17,9 +17,15 @@ def explain_error(exc):
     detail = str(exc)
     original = f'{type(exc).__name__}: {detail}'
     text = detail.lower()
-    if 'singular stiffness' in text or 'non-positive diagonal' in text:
+    if 'singular stiffness' in text or 'near-singular stiffness' in text or 'non-positive diagonal' in text:
+        locations = getattr(exc, 'dofs', ())
+        hint = ''
+        if locations:
+            heading = ('近零刚度模态涉及的候选自由度（不代表唯一故障原因）' if getattr(exc, 'suspected', False)
+                       else '刚度对角项非正的自由度')
+            hint = '\n\n' + heading + '：\n' + '、'.join(f'节点 {n} / {d}' for n, d in locations)
         return ErrorExplanation('结构不稳定或约束不足',
-            '刚度矩阵无法可靠求解。请检查支座约束、未连接节点、零刚度自由度及杆端释放是否形成机构。\n\n'+original)
+            '刚度矩阵无法可靠求解。请检查支座约束、未连接节点、零刚度自由度及杆端释放是否形成机构。'+hint+'\n\n'+original)
     if 'beam2d' in text or 'transverse loads only' in text:
         return ErrorExplanation('连续梁单元输入不适用',
             'Beam2D 仅用于从左到右的水平梁及横向荷载；斜梁或轴向变形应采用 Frame2D。\n\n'+original)
