@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-11",
+  "latest": "v1.1.7",
+  "packages": [
+    {
+      "version": "1.1.7",
+      "archive": "MatrixDisplacement_V1.1.7_Windows.zip",
+      "bytes": 75317276,
+      "sha256": "525999cd5a59be949fbe5287b5dbe354c2ee58ae5e2a6228c30f220c6a6c564c",
+      "exe_sha256": "9ec30afdf1da02a4fdb39d21236e18ec4324f11d2da9568291d08ed178174789",
+      "files": 1041,
+      "extracted_files_verified": true,
+      "isolated_path_self_test": "PASS",
+      "architecture": "Windows x64",
+      "release_url": "https://github.com/ZeyuWen17/MatrixDisplacement/releases/tag/v1.1.7",
+      "github_asset_hashes_verified": true
+    },
+    {
+      "version": "1.1.6",
+      "archive": "MatrixDisplacement_V1.1.6_Windows.zip",
+      "bytes": 75311735,
+      "sha256": "4655be1de6b335cc75fda1d6ed8cf9092f2502b7281c32705e514ecf22287f67",
+      "exe_sha256": "1bde6d2cd1c485b32cd99f7b0b4070b4222bba116b5d072ad70b27b08fa290a3",
+      "files": 1041,
+      "extracted_files_verified": true,
+      "isolated_path_self_test": "PASS",
+      "architecture": "Windows x64",
+      "release_url": "https://github.com/ZeyuWen17/MatrixDisplacement/releases/tag/v1.1.6",
+      "github_asset_hashes_verified": true
+    },
+    {
+      "version": "1.1.5",
+      "archive": "MatrixDisplacement_V1.1.5_Windows.zip",
+      "bytes": 75308628,
+      "sha256": "d71ce0abddc052892eb3f985cfe04ba3f7db87abc06fe3c09f63e33518e2bdef",
+      "exe_sha256": "0ad0b1ffc9faa9f23ede952f7038cee77ec3a5628f243d0d0fdd81afc5100fbf",
+      "files": 1041,
+      "extracted_files_verified": true,
+      "isolated_path_self_test": "PASS",
+      "architecture": "Windows x64",
+      "release_url": "https://github.com/ZeyuWen17/MatrixDisplacement/releases/tag/v1.1.5",
+      "github_asset_hashes_verified": true
+    }
+  ]
+}

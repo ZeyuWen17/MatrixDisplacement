@@ -17,6 +17,26 @@
 
 ## 安装与启动
 
+### Windows 免安装包（推荐）
+
+**[下载 V1.1.7 Windows x64 免安装版](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.7/MatrixDisplacement_V1.1.7_Windows.zip)** · [发布说明与校验文件](https://github.com/ZeyuWen17/MatrixDisplacement/releases/tag/v1.1.7)
+
+无需单独安装 Python。下载后**解压整个 ZIP**，打开 `MatrixDisplacement` 文件夹，双击 `MatrixDisplacement.exe`。必须保留 `_internal` 文件夹，不能只复制 EXE，也不要直接从压缩包预览窗口运行。
+
+| 版本 | Windows 免安装包 | 说明 |
+| --- | --- | --- |
+| **V1.1.7（推荐）** | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.7/MatrixDisplacement_V1.1.7_Windows.zip) | 后台求解、按需绘图、错误定位 |
+| V1.1.6 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.6/MatrixDisplacement_V1.1.6_Windows.zip) | 导出体验与四图批量导出 |
+| V1.1.5 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.5/MatrixDisplacement_V1.1.5_Windows.zip) | 内力标注与布局优化 |
+| V1.1.4 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.4/MatrixDisplacement_V1.1.4_Windows.zip) | 历史版本 |
+| V1.1.3 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.3/MatrixDisplacement_V1.1.3_Windows.zip) | 历史版本 |
+| V1.1.2 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.2/MatrixDisplacement_V1.1.2_Windows.zip) | 历史版本 |
+| V1.1.1 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.1/MatrixDisplacement_V1.1.1_Windows.zip) | 历史版本 |
+
+V1.1 仅保留源码归档。完整版本说明及附件见 [Releases](https://github.com/ZeyuWen17/MatrixDisplacement/releases)。页面中的 **Source code (zip/tar.gz)** 是源码，不是免安装程序。
+
+V1.1.5～V1.1.7 包含运行说明，发布页附 SHA256 校验文件及解压自检记录。可在 PowerShell 使用 `Get-FileHash .\MatrixDisplacement_V1.1.7_Windows.zip -Algorithm SHA256` 核对下载文件。
+
 ### 运行最新源码（Windows）
 
 安装 Python 3.12，下载或克隆仓库，然后在 PowerShell 执行：
@@ -30,12 +50,6 @@ py -3.12 -m venv .venv
 ```
 
 也可从仓库首页选择 **Code → Download ZIP**，解压后进入 `source/matrix_displacement_v11`，从创建虚拟环境开始执行。安装依赖需要联网；后续启动只需执行最后一行。
-
-### Windows 免安装包
-
-[Releases](https://github.com/ZeyuWen17/MatrixDisplacement/releases) 提供历史版本下载。当前可下载的 Windows 程序包最高为 **V1.1.4**；V1.1.5、V1.1.6 发布页仅提供源码，使用最新功能请按上方步骤运行源码。
-
-下载 Windows ZIP 后解压完整目录，运行 `MatrixDisplacement.exe`。必须保留旁边的 `_internal` 文件夹，不能只复制 EXE。
 
 ## 快速上手
 
