@@ -5,6 +5,9 @@ and solver. The canvas is interactive QGraphicsView, while solved plots are
 embedded Matplotlib figures. All numerical inputs are SI units.
 """
 import math
+import time
+import os
+import tempfile
 import sys
 from copy import deepcopy
 from pathlib import Path
@@ -18,7 +21,7 @@ from PySide6.QtWidgets import (
     QPlainTextEdit, QLabel, QPushButton, QComboBox, QCheckBox, QLineEdit,
     QFileDialog, QMessageBox, QDialog, QDialogButtonBox, QButtonGroup,
     QScrollArea, QSizePolicy, QTableWidget, QTableWidgetItem,
-    QHeaderView, QDoubleSpinBox, QRubberBand, QInputDialog, QProgressBar, QToolBar,
+    QHeaderView, QDoubleSpinBox, QRubberBand, QInputDialog, QProgressBar, QToolBar, QListWidget,
 )
 
 from matrix_displacement.editor import ModelEditor, _real
@@ -36,7 +39,9 @@ from matrix_displacement.exporting import export_results_csv
 from matrix_displacement.visualization import plot_force_diagram, plot_deformed_shape
 from matrix_displacement.recovery import RecoveryStore
 from matrix_displacement.file_revision import FileRevision
-from matrix_displacement.supports import support_symbol
+from matrix_displacement.supports import support_symbol, support_from_values
+from matrix_displacement.preflight import check_model
+from matrix_displacement.units import parse_quantity, label_unit
 
 # QGraphicsScene pixels per metre; scene Y is reversed for positive global Y.
 PIXELS_PER_METRE = 65.0
@@ -103,13 +108,15 @@ class NumericDialog(QDialog):
         self.setWindowTitle(title)
         self.setMinimumWidth(360)
         self.inputs = {}
+        self.units = {}
         self.data = {}
         outer = QVBoxLayout(self)
         form = QFormLayout()
         for key, label, default in fields:
             field = QLineEdit(_display_number(default))
             field.setObjectName(key)
-            field.setToolTip('可输入小数或科学计数法，例如 2.1e11')
+            self.units[key] = label_unit(label)
+            field.setToolTip('支持单位后缀：如 10 kN、200 mm、210 GPa；不带单位按字段标示的 SI 单位')
             self.inputs[key] = field
             form.addRow(label, field)
         outer.addLayout(form)
@@ -121,7 +128,7 @@ class NumericDialog(QDialog):
 
     def accept(self):
         try:
-            self.data = {key:_real(field.text(),key)
+            self.data = {key:parse_quantity(field.text(),self.units[key],key)
                          for key,field in self.inputs.items()}
         except ValueError as exc:
             QMessageBox.warning(self,'数值输入错误',str(exc))
@@ -145,11 +152,11 @@ class PropertiesDialog(NumericDialog):
             self.release_j.setChecked(element.release_j)
             self.layout().insertWidget(1,self.release_i)
             self.layout().insertWidget(2,self.release_j)
-        self.layout().insertWidget(0,QLabel('输入为 SI 单位，E/A/I 均须大于 0。'))
+        self.layout().insertWidget(0,QLabel('可输入 210 GPa、100 cm²、800 cm⁴；不带单位按 SI。'))
 
     def accept(self):
         try:
-            values = {key:_real(field.text(),key) for key,field in self.inputs.items()}
+            values = {key:parse_quantity(field.text(),self.units[key],key) for key,field in self.inputs.items()}
             if any(value <= 0 for value in values.values()):
                 raise ValueError('E、A、I 都必须大于 0')
             self.data = values
@@ -159,6 +166,30 @@ class PropertiesDialog(NumericDialog):
         QDialog.accept(self)
 
 
+class SupportPreview(QWidget):
+    def __init__(self,parent=None):
+        super().__init__(parent)
+        self.symbol=None
+        self.setMinimumSize(110,100)
+        self.setMaximumHeight(110)
+
+    def paintEvent(self,event):
+        painter=QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.translate(self.width()/2,self.height()/2)
+        painter.setPen(QPen(QColor('#b45309' if self.symbol and self.symbol.prescribed else '#334155'),1.6))
+        painter.setBrush(QBrush(QColor('white')))
+        if self.symbol:
+            for x1,y1,x2,y2 in self.symbol.lines:painter.drawLine(QLineF(x1,y1,x2,y2))
+            for points in self.symbol.polygons:
+                painter.setBrush(QBrush(QColor('transparent' if len(points)==4 else 'white')))
+                painter.drawPolygon(QPolygonF([QPointF(x,y) for x,y in points]))
+            painter.setBrush(QBrush(QColor('white')))
+            for x,y,r in self.symbol.circles:painter.drawEllipse(QRectF(x-r,y-r,2*r,2*r))
+        painter.drawEllipse(QRectF(-4,-4,8,8))
+        painter.end()
+
+
 class SupportDialog(QDialog):
     def __init__(self, node_id, active, constraints, parent=None):
         super().__init__(parent)
@@ -166,13 +197,26 @@ class SupportDialog(QDialog):
         self.setMinimumWidth(410)
         self.data = None
         self.inputs = {}
+        self.active=set(active)
         outer = QVBoxLayout(self)
         outer.addWidget(QLabel('勾选表示该自由度位移已知；零值为普通支座，也可输入支座沉降。'))
+        preset_row=QHBoxLayout()
+        self.preset_buttons={}
+        presets=[('自由',set()),('固定',self.active),('铰接',{'ux','uy'} & self.active),
+                 ('水平可动',{'uy'}),('竖向可动',{'ux'})]
+        for name,dofs in presets:
+            button=QPushButton(name)
+            button.setEnabled(name=='自由' or bool(dofs) and dofs<=self.active)
+            button.setToolTip('仅改变约束勾选；保留各自由度已输入的数值。')
+            button.clicked.connect(lambda checked=False,selected=dofs:self._apply_preset(selected))
+            self.preset_buttons[name]=button
+            preset_row.addWidget(button)
+        outer.addLayout(preset_row)
         form=QFormLayout()
         for dof, desc in (('ux','水平位移 ux (m)'),('uy','竖向位移 uy (m)'),('rz','转角 rz (rad)')):
             box = QCheckBox('约束')
             box.setEnabled(dof in active)
-            box.setChecked((node_id,dof) in constraints)
+            box.setChecked(dof in self.active and (node_id,dof) in constraints)
             field = QLineEdit(_display_number(constraints.get((node_id,dof),0.0)))
             field.setEnabled(box.isChecked())
             box.toggled.connect(field.setEnabled)
@@ -182,18 +226,73 @@ class SupportDialog(QDialog):
             self.inputs[dof]=(box,field)
             form.addRow(desc,wrap)
         outer.addLayout(form)
+        self.preview=SupportPreview()
+        outer.addWidget(self.preview)
+        self.preview_text=QLabel()
+        self.preview_text.setWordWrap(True)
+        outer.addWidget(self.preview_text)
+        outer.addWidget(QLabel('预设按当前单元的有效自由度设置；“固定”约束全部有效自由度。\n'
+                               '切换预设保留输入值；普通零位移支座请确认数值为 0。'))
+        for box,field in self.inputs.values():
+            box.toggled.connect(self._update_preview)
+            field.textChanged.connect(self._update_preview)
+        self._update_preview()
         buttons=QDialogButtonBox(QDialogButtonBox.StandardButton.Ok |
                                  QDialogButtonBox.StandardButton.Cancel)
         buttons.accepted.connect(self.accept);buttons.rejected.connect(self.reject)
         outer.addWidget(buttons)
 
+    def _apply_preset(self,dofs):
+        for dof,(box,field) in self.inputs.items():
+            box.setChecked(box.isEnabled() and dof in dofs)
+        self._update_preview()
+
+    def _update_preview(self,*args):
+        try:
+            values={d:parse_quantity(field.text(),'rad' if d=='rz' else 'm',d) for d,(box,field) in self.inputs.items()
+                    if box.isEnabled() and box.isChecked()}
+            self.preview.symbol=support_from_values(values,self.active)
+            text=(self.preview.symbol.name+'\n'+self.preview.symbol.detail) if values else '自由节点：无位移约束'
+            if self.preview.symbol and self.preview.symbol.prescribed:text='给定位移 · '+text
+            self.preview_text.setText(text)
+        except ValueError:
+            self.preview.symbol=None
+            self.preview_text.setText('输入尚未有效，无法预览；请输入有限数值。')
+        self.preview.update()
+
     def accept(self):
         try:
-            self.data = {dof:_real(field.text(),dof) for dof,(box,field) in self.inputs.items()
+            self.data = {dof:parse_quantity(field.text(),'rad' if dof=='rz' else 'm',dof) for dof,(box,field) in self.inputs.items()
                          if box.isEnabled() and box.isChecked()}
         except ValueError as exc:
             QMessageBox.warning(self,'支座输入错误',str(exc));return
         super().accept()
+
+
+class ModelCheckDialog(QDialog):
+    def __init__(self,issues,parent,*,before_solve=False):
+        super().__init__(parent)
+        self.setWindowTitle('模型检查：点击问题定位')
+        self.resize(720,420)
+        layout=QVBoxLayout(self)
+        label=QLabel('错误必须修正后才能计算；建议需人工核对，可继续计算。\n'
+                     '检查不自动修改模型，也不能证明结构稳定。')
+        layout.addWidget(label)
+        self.issues=list(issues)
+        self.list=QListWidget()
+        self.list.setWordWrap(True)
+        for issue in issues:
+            self.list.addItem(('错误' if issue.severity=='error' else '建议')+'：'+issue.message)
+        self.list.currentRowChanged.connect(lambda row:parent._locate_issue(issues[row]) if 0<=row<len(issues) else None)
+        layout.addWidget(self.list)
+        if not issues:layout.addWidget(QLabel('未发现上述检查范围内的问题；仍需求解器检查刚度与稳定性。'))
+        buttons=QDialogButtonBox(QDialogButtonBox.StandardButton.Close)
+        buttons.rejected.connect(self.reject)
+        if before_solve and not any(i.severity=='error' for i in issues):
+            proceed=buttons.addButton('已核对，继续计算',QDialogButtonBox.ButtonRole.AcceptRole)
+            proceed.clicked.connect(self.accept)
+        layout.addWidget(buttons)
+        if issues:self.list.setCurrentRow(0)
 
 
 class MemberLoadDialog(QDialog):
@@ -231,7 +330,7 @@ class MemberLoadDialog(QDialog):
             self.stacks.append((w,entries))
             outer.addWidget(w)
         self.kind_box.currentIndexChanged.connect(self._switch)
-        outer.addWidget(QLabel('符号：X 向右、Y 向上；向下荷载取负值。桁架不支持杆件荷载。'))
+        outer.addWidget(QLabel('支持 10 kN、2 kN/m、200 mm；无后缀按标示单位。\n符号：X 向右、Y 向上；向下荷载取负值。桁架不支持杆件荷载。'))
         buttons=QDialogButtonBox(QDialogButtonBox.StandardButton.Ok |
                                  QDialogButtonBox.StandardButton.Cancel)
         buttons.accepted.connect(self.accept);buttons.rejected.connect(self.reject)
@@ -253,7 +352,7 @@ class MemberLoadDialog(QDialog):
         try:
             self.kind = self.kind_box.currentData()
             self.system = self.system_box.currentData()
-            self.data = {key:_real(widget.text(),key)
+            self.data = {key:parse_quantity(widget.text(), 'm' if key=='position' else ('N/m' if key.startswith('q') else 'N'),key)
                          for key,widget in self.stacks[self.kind_box.currentIndex()][1].items()}
         except ValueError as exc:
             QMessageBox.warning(self,'荷载输入错误',str(exc));return
@@ -592,6 +691,8 @@ class MainWindow(QMainWindow):
         self.figures={}
         self._figure_modes={}
         self._solve_thread=None
+        self._plot_job=None
+        self._plot_cancelled=False
         self._solve_cancelled=False
         self.show_dimensions = True
         self.setMinimumSize(1080,700)
@@ -602,7 +703,10 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage('已加载悬臂梁示例；点击“计算”可查看结果。')
         self._update_title()
         # Offer recovery only after the window is initialized and the event loop starts.
-        QTimer.singleShot(0, self._offer_recovery)
+        self._recovery_offer_timer=QTimer(self)
+        self._recovery_offer_timer.setSingleShot(True)
+        self._recovery_offer_timer.timeout.connect(self._offer_recovery)
+        self._recovery_offer_timer.start(0)
 
     def _build(self):
         file_menu=self.menuBar().addMenu('文件')
@@ -629,11 +733,13 @@ class MainWindow(QMainWindow):
         action(examples,'两跨连续梁',lambda:self.load_example('continuous_beam'))
         action(examples,'三角形平面桁架',lambda:self.load_example('truss'))
         analyze=self.menuBar().addMenu('分析与导出')
+        action(analyze,'检查模型并定位问题',self.check_model_dialog)
+        action(analyze,'荷载工况与组合',self.manage_load_cases)
         action(analyze,'运行分析',self.start_solve,'Ctrl+R')
         action(analyze,'导出教学报告',self.export_report)
         action(analyze,'导出 CSV 数据',self.export_csv)
-        action(analyze,'保存当前结果图',self.export_figure)
-        action(analyze,'导出全部结果图',self.export_all_figures)
+        action(analyze,'保存当前结果图',self.start_export_figure)
+        action(analyze,'导出全部结果图',self.start_export_all)
         view_menu=self.menuBar().addMenu('视图')
         action(view_menu,'放大',lambda:self.canvas.zoom_by(1.25),'Ctrl++')
         action(view_menu,'缩小',lambda:self.canvas.zoom_by(.8),'Ctrl+-')
@@ -764,9 +870,9 @@ class MainWindow(QMainWindow):
         csv_btn=QPushButton('导出结果表格 (.csv)')
         csv_btn.clicked.connect(self.export_csv);sv.addWidget(csv_btn)
         fig_btn=QPushButton('保存当前结果图 (.png)')
-        fig_btn.clicked.connect(self.export_figure);sv.addWidget(fig_btn)
+        fig_btn.clicked.connect(self.start_export_figure);sv.addWidget(fig_btn)
         all_fig_btn=QPushButton('导出全部结果图 (.png)')
-        all_fig_btn.clicked.connect(self.export_all_figures);sv.addWidget(all_fig_btn)
+        all_fig_btn.clicked.connect(self.start_export_all);sv.addWidget(all_fig_btn)
         cbox.addWidget(solver_box)
         self.info=QLabel()
         self.info.setWordWrap(True)
@@ -804,9 +910,9 @@ class MainWindow(QMainWindow):
         labels_bar=self.addToolBar('内力图标注')
         labels_bar.addWidget(QLabel('内力图数值：'))
         self.force_labels=QComboBox()
-        for label,value in (('隐藏数值','none'),('仅采样极值','extrema'),('端点与采样极值','all')):
+        for label,value in (('自动（大模型隐藏标注）','auto'),('隐藏数值','none'),('仅采样极值','extrema'),('端点与采样极值','all')):
             self.force_labels.addItem(label,value)
-        self.force_labels.setCurrentIndex(2)
+        self.force_labels.setCurrentIndex(0)
         labels_bar.addWidget(self.force_labels)
         self.force_labels.currentIndexChanged.connect(self._refresh_force_labels)
         self.result_tabs.currentChanged.connect(self._show_result_figure)
@@ -831,13 +937,15 @@ class MainWindow(QMainWindow):
         title=self.result_tabs.tabText(self.result_tabs.currentIndex())
         if title in self.figures:
             try:
-                self._ensure_figure(title)
+                mode=self._label_mode() if title!='变形图' else 'deformed'
+                if self._figure_modes.get(title)!=mode and self._plot_job is None:
+                    self._start_plot_job(self._figure_steps(title),f'生成{title}')
             except Exception as exc:
                 self._error(exc)
 
     def _ensure_figure(self, title):
         figure=self.figures[title]
-        mode=self.force_labels.currentData() if title!='变形图' else 'deformed'
+        mode=self._label_mode() if title!='变形图' else 'deformed'
         if self._figure_modes.get(title)==mode:
             return figure
         figure.clear()
@@ -847,11 +955,134 @@ class MainWindow(QMainWindow):
         else:
             component={'轴力 N':'N','剪力 V':'V','弯矩 M':'M'}[title]
             plot_force_diagram(self.editor.model,self.result,component,ax=ax,
-                               interactive=True,value_mode=mode)
+                               interactive=True,value_mode=mode,show_node_ids=len(self.editor.model.elements)<=100)
         figure.tight_layout()
         self._figure_modes[title]=mode
         figure.canvas.draw_idle()
         return figure
+
+    def _label_mode(self):
+        mode=self.force_labels.currentData()
+        return ('none' if len(self.editor.model.elements)>100 else 'all') if mode=='auto' else mode
+
+    def _figure_steps(self,title):
+        from matrix_displacement.visualization import force_diagram_steps, deformed_shape_steps
+        figure=self.figures[title]
+        mode=self._label_mode() if title!='变形图' else 'deformed'
+        if self._figure_modes.get(title)==mode:
+            return figure
+        figure.clear()
+        ax=figure.add_subplot(111)
+        complete=False
+        try:
+            options=dict(ax=ax,show_node_ids=len(self.editor.model.elements)<=100)
+            if title=='变形图':
+                yield from deformed_shape_steps(self.editor.model,self.result,**options)
+            else:
+                component={'轴力 N':'N','剪力 V':'V','弯矩 M':'M'}[title]
+                yield from force_diagram_steps(self.editor.model,self.result,component,
+                                               interactive=True,value_mode=mode,**options)
+            yield ('布局与显示（完整标注可能较慢）',0,0)
+            figure.tight_layout()
+            figure.canvas.draw()
+            self._figure_modes[title]=mode
+            complete=True
+            return figure
+        finally:
+            if not complete:
+                figure.clear()
+                self._figure_modes.pop(title,None)
+                figure.canvas.draw_idle()
+
+    def _start_plot_job(self,steps,label):
+        if self._plot_job is not None or self._solve_thread is not None:
+            return
+        self._plot_job=steps
+        self._plot_cancelled=False
+        self._plot_label=label
+        self._export_completed=0
+        self._export_total=0
+        self._set_solve_busy(True)
+        self.cancel_solve_button.setText('取消绘图 / 导出')
+        self.statusBar().showMessage(label)
+        QTimer.singleShot(0,self._advance_plot_job)
+
+    def _advance_plot_job(self):
+        job=self._plot_job
+        if job is None:return
+        done=False
+        message=None
+        try:
+            if self._plot_cancelled:
+                job.close()
+                done=True
+                message=self._plot_label+'已取消；已完成图片保留，未完成图片不写入。'
+            else:
+                deadline=time.perf_counter()+.012
+                while True:
+                    stage,current,total=next(job)
+                    self.solve_progress.setRange(0,total)
+                    self.solve_progress.setValue(current)
+                    self.statusBar().showMessage(f'{self._plot_label}：{stage} '+(f'{current}/{total}' if total else ''))
+                    if time.perf_counter()>=deadline or stage.startswith(('写入','图片已完成','布局')):break
+        except StopIteration:
+            done=True
+            message=self._plot_label+'完成。'
+        except Exception as exc:
+            done=True
+            job.close()
+            self._error(exc)
+            message=self._plot_label+'失败；已完成图片保留。'
+        finally:
+            if done:
+                self._plot_job=None
+                self._set_solve_busy(False)
+                self.solve_progress.setRange(0,0)
+                self.cancel_solve_button.setText('取消本次计算')
+                if self._export_total:message+=f'（图片 {self._export_completed}/{self._export_total}）'
+                if message:self.statusBar().showMessage(message,15000)
+            else:
+                QTimer.singleShot(1,self._advance_plot_job)
+
+    def _export_steps(self,targets,success_directory=None):
+        self._export_completed=0
+        self._export_total=len(targets)
+        for index,(title,path) in enumerate(targets,1):
+            figure=yield from self._figure_steps(title)
+            yield (f'写入第 {index}/{len(targets)} 张 PNG（本张写入结束后可取消）',index-1,len(targets))
+            fd,temp=tempfile.mkstemp(prefix='.'+path.name+'.',suffix='.tmp',dir=path.parent)
+            os.close(fd)
+            try:
+                figure.savefig(temp,format='png',dpi=160,bbox_inches='tight')
+                os.replace(temp,path)
+            finally:
+                Path(temp).unlink(missing_ok=True)
+            # Always return to the event loop between complete images.
+            self._export_completed=index
+            yield ('图片已完成',index,len(targets))
+            yield ('准备下一张',index,len(targets))
+        if success_directory is not None:self._export_directory=Path(success_directory).resolve()
+
+    def start_export_all(self):
+        if not self._require_result() or self._plot_job is not None:return
+        path=QFileDialog.getExistingDirectory(self,'选择全部结果图输出文件夹',str(self._export_start_directory()))
+        if not path:return
+        try:
+            prefix=f'{self.file_path.stem}_' if self.file_path else ''
+            directory=self._new_export_directory(path,prefix+'result_figures')
+            targets=[(title,directory/f'{prefix}{title}.png') for title in ('轴力 N','剪力 V','弯矩 M','变形图')]
+            self._start_plot_job(self._export_steps(targets,path),f'导出到 {directory}')
+        except Exception as exc:self._error(exc)
+
+    def start_export_figure(self):
+        if not self._require_result() or self._plot_job is not None:return
+        title=self.result_tabs.tabText(self.result_tabs.currentIndex())
+        if title not in self.figures:
+            QMessageBox.information(self,'请选择图形','请先选择一个结果图标签。');return
+        path,_=QFileDialog.getSaveFileName(self,'保存结果图',self._export_default_file(f'{title}.png'),'PNG 图片 (*.png)')
+        if path:
+            target=Path(path)
+            self._start_plot_job(self._export_steps([(title,target)],target.parent),f'导出到 {target}')
 
     def _update_history_actions(self):
         self.undo_action.setEnabled(self.history.can_undo)
@@ -1184,6 +1415,12 @@ class MainWindow(QMainWindow):
         self._update_history_actions()
 
     def _reset_results(self):
+        if self._plot_job is not None:
+            self._plot_job.close()
+            self._plot_job=None
+            self._set_solve_busy(False)
+            self.solve_progress.setRange(0,0)
+            self.cancel_solve_button.setText('取消本次计算')
         self.figures.clear()
         self._figure_modes.clear()
         self.result_tabs.blockSignals(True)
@@ -1476,11 +1713,19 @@ class MainWindow(QMainWindow):
         return True
 
     def closeEvent(self,event):
+        if self._plot_job is not None:
+            # This event runs between generator steps, so cleanup is safe now.
+            self._plot_job.close()
+            self._plot_job=None
+            self._set_solve_busy(False)
+            self.solve_progress.setRange(0,0)
+            self.cancel_solve_button.setText('取消本次计算')
         if self._solve_thread is not None:
             self.statusBar().showMessage('计算仍在结束中，请稍后关闭；可先取消本次结果。')
             event.ignore()
             return
         if self._maybe_save():
+            self._recovery_offer_timer.stop()
             self._autosave_debounce.stop()
             self._autosave_periodic.stop()
             if not self._try_clear_recovery():
@@ -1646,6 +1891,17 @@ class MainWindow(QMainWindow):
         if self._solve_thread is not None:
             return
         try:
+            issues=check_model(self.editor.model)
+            if issues:
+                self.result=None
+                self._reset_results()
+                dialog=ModelCheckDialog(issues,self,before_solve=True)
+                if dialog.exec()!=QDialog.DialogCode.Accepted or any(i.severity=='error' for i in issues):
+                    return
+        except Exception as exc:
+            self._error(exc)
+            return
+        try:
             snapshot=deepcopy(self.editor.model)
             self._solve_snapshot=model_to_dict(snapshot)
             thread=SolveThread(snapshot,Mode(self.mode_combo.currentData()),self)
@@ -1661,7 +1917,54 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage('正在计算，窗口可响应；取消后将丢弃结果并等待当前求解结束。')
         thread.start()
 
+    def manage_load_cases(self):
+        from .cases_dialog import CasesDialog
+        dialog=CasesDialog(self.editor.model,self)
+        if dialog.exec()==QDialog.DialogCode.Accepted:
+            before=self.history.capture()
+            self.editor.model=dialog.model
+            self.history.commit(before)
+            self._modified()
+
+    def check_model_dialog(self):
+        if self._solve_thread is not None:return
+        try:
+            ModelCheckDialog(check_model(self.editor.model),self).exec()
+        except Exception as exc:self._error(exc)
+
+    def _locate_issue(self,issue):
+        self.selection=({('node',n) for n in issue.nodes if n in self.editor.model.nodes} |
+                        {('element',e) for e in issue.elements if e in self.editor.model.elements})
+        self.selected=next(iter(sorted(self.selection)),None)
+        self.main_tabs.setCurrentIndex(0)
+        # Diagnostic rendering must not evaluate the invalid geometry/material
+        # that caused the issue. Use a read-only display copy, not editor repair.
+        display=deepcopy(self.editor.model)
+        display.elements={eid:e for eid,e in display.elements.items()
+                          if e.node_i in display.nodes and e.node_j in display.nodes}
+        display.member_loads=[]
+        display.loads={}
+        display.constraints={key:value for key,value in display.constraints.items()
+                             if key[0] in display.nodes and key[1] in ('ux','uy','rz')
+                             and isinstance(value,(int,float)) and math.isfinite(value)}
+        self.canvas.redraw(display,self.selection,show_dimensions=False)
+        self.info.setText('问题定位（检查视图暂不显示荷载与尺寸）\n'+issue.message)
+        nodes=set(issue.nodes)
+        for eid in issue.elements:
+            element=self.editor.model.elements.get(eid)
+            if element:nodes.update((element.node_i,element.node_j))
+        points=[_point(self.editor.model.nodes[n]) for n in nodes if n in self.editor.model.nodes]
+        if points:
+            left,right=min(p.x() for p in points),max(p.x() for p in points)
+            top,bottom=min(p.y() for p in points),max(p.y() for p in points)
+            self.canvas.fitInView(QRectF(left-80,top-80,right-left+160,bottom-top+160),Qt.AspectRatioMode.KeepAspectRatio)
+        self.statusBar().showMessage(issue.message,10000)
+
     def cancel_solve(self):
+        if self._plot_job is not None:
+            self._plot_cancelled=True
+            self.cancel_solve_button.setEnabled(False)
+            return
         if self._solve_thread is not None:
             self._solve_cancelled=True
             self.cancel_solve_button.setEnabled(False)
@@ -1710,6 +2013,9 @@ class MainWindow(QMainWindow):
         for eid,force in sorted(result.element_end_forces_local.items()):
             lines.append(f'{eid:>5}: '+', '.join(f'{x:.8g}' for x in force))
         self.summary.setPlainText('\n'.join(lines))
+        from .result_table import result_tables
+        for title,table in result_tables(model,result):
+            self.result_tabs.addTab(table,title)
         self._build_inspector()
         for title in ('轴力 N','剪力 V','弯矩 M','变形图'):
             figure=Figure(figsize=(8,6),dpi=100)
@@ -1982,8 +2288,14 @@ def main(argv=None):
                     QFileDialog.getExistingDirectory=lambda *args: folder
                     window.export_csv()
                     window.export_csv()
-                    window.export_all_figures()
-                    window.export_all_figures()
+                    for _ in range(2):
+                        window.start_export_all()
+                        deadline=time.monotonic()+60
+                        while window._plot_job is not None and time.monotonic()<deadline:
+                            app.processEvents()
+                            time.sleep(.001)
+                        if window._plot_job is not None:
+                            raise RuntimeError('Incremental export did not finish')
                     for name in ('csv_results','csv_results_001'):
                         if len(list((Path(folder)/name).glob('*.csv')))!=4:
                             raise RuntimeError('CSV export did not preserve both batches')
@@ -1992,6 +2304,28 @@ def main(argv=None):
                             raise RuntimeError('Batch figure export failed')
                 finally:
                     QFileDialog.getExistingDirectory=original_directory_dialog
+                from matrix_displacement.load_cases import capture_case, combination_model
+                from matrix_displacement.io import save_model_json, load_model_json
+                from .cases_dialog import CasesDialog
+                from .result_table import ResultTable
+                unit_dialog=PropertiesDialog(210e9,.01,8e-6)
+                unit_dialog.inputs['E'].setText('210 GPa')
+                unit_dialog.accept()
+                if unit_dialog.data['E']!=210e9:raise RuntimeError('Unit conversion failed')
+                unit_dialog.deleteLater()
+                case_dialog=CasesDialog(window.editor.model)
+                case_dialog.name.setText('G');case_dialog.save_case()
+                case_dialog.model.load_combinations['2G']={'G':2.0}
+                save_model_json(case_dialog.model,Path(folder)/'cases.json')
+                loaded=load_model_json(Path(folder)/'cases.json')
+                combined=combination_model(loaded,loaded.load_combinations['2G'])
+                if abs(LinearStaticSolver().solve(combined).reaction(1,'uy')-11000)>1e-7:
+                    raise RuntimeError('Load combination failed')
+                case_dialog.deleteLater()
+                tables=window.findChildren(ResultTable)
+                if len(tables)!=2:raise RuntimeError('Result tables missing')
+                tables[0].selectAll();tables[0].copy_selection()
+                if not QApplication.clipboard().text():raise RuntimeError('Result copy failed')
                 window.history.execute(window.editor.add_node,7.0,2.0)
                 window._modified()
                 window._autosave_if_dirty()

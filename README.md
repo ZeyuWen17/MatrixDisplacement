@@ -2,15 +2,19 @@
 
 用于结构力学课程学习的二维结构建模与线弹性静力分析程序。基于 Python、NumPy、Matplotlib 和 PySide6，支持连续梁、平面桁架、平面刚架及刚架—桁架混合模型。
 
-当前源码版本：**V1.1.8**。提供图形建模、矩阵组装过程、内力与变形结果，方便将教材计算步骤与数值结果对照。
+当前源码版本：**V1.1.9**。提供图形建模、矩阵组装过程、内力与变形结果，方便将教材计算步骤与数值结果对照。
+
+V1.1.9 完成大模型分阶段绘图与导出、自动精简标注、可排序复制的结果表格、带单位输入、荷载工况与组合，并包含模型检查和支座预设。[验收记录](source/matrix_displacement_v11/docs/V1.1.9_VALIDATION.md)。
 
 ## 主要功能
 
 - **交互建模**：节点与杆件编辑、支座与给定位移、材料及截面属性、杆端转角释放、多选与批量修改、撤销与重做。
+- **工况与组合**：保存多组荷载，按自定系数组合并重新求解；共享结构和支座，JSON 保存工况库，支持撤销。
 - **荷载输入**：节点力与力矩、杆件均布荷载、集中荷载和线性分布荷载，支持局部与整体坐标系。
 - **分析与教学**：教学模式保留组装矩阵，快速模式减少中间记录；输出节点位移、支座反力及杆端力。
 - **响应与诊断**：后台求解提供忙碌提示和取消结果入口；结果图按需生成并缓存；不稳定结构显示相关自由度，并选中对应节点便于排查。
-- **结果查看**：轴力、剪力、弯矩、变形图和杆件截面查询；内力数值可隐藏、仅显示采样极值或显示端点与采样极值。
+- **结果表格**：位移/反力及杆端力表按数值排序，`Ctrl+A` 全选、`Ctrl+C` 带表头复制至 Excel。
+- **结果查看**：轴力、剪力、弯矩、变形图和杆件截面查询；超过 100 根杆件自动隐藏密集标注；可手动选择隐藏、采样极值或完整标注，点击曲线查看杆件详情。
 - **保存与导出**：JSON 模型、自动恢复草稿、保存冲突提示、Markdown 教学报告、CSV 数据和 PNG 图片；支持一次导出全部四张结果图。
 
 ![两跨两层刚架弯矩图](source/matrix_displacement_v11/docs/assets/acceptance-2026-11-09/dense_frame_labels.png)
@@ -19,13 +23,14 @@
 
 ### Windows 免安装包（推荐）
 
-**[下载 V1.1.8 Windows x64 免安装版](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.8/MatrixDisplacement_V1.1.8_Windows.zip)** · [发布说明与校验文件](https://github.com/ZeyuWen17/MatrixDisplacement/releases/tag/v1.1.8)
+**[下载 V1.1.9 Windows x64 免安装版](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.9/MatrixDisplacement_V1.1.9_Windows.zip)** · [发布说明与校验文件](https://github.com/ZeyuWen17/MatrixDisplacement/releases/tag/v1.1.9)
 
 无需单独安装 Python。下载后**解压整个 ZIP**，打开 `MatrixDisplacement` 文件夹，双击 `MatrixDisplacement.exe`。必须保留 `_internal` 文件夹，不能只复制 EXE，也不要直接从压缩包预览窗口运行。
 
 | 版本 | Windows 免安装包 | 说明 |
 | --- | --- | --- |
-| **V1.1.8（推荐）** | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.8/MatrixDisplacement_V1.1.8_Windows.zip) | 支座约束符号与给定位移显示 |
+| **V1.1.9（推荐）** | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.9/MatrixDisplacement_V1.1.9_Windows.zip) | 大模型体验、结果表格、单位输入、工况组合 |
+| V1.1.8 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.8/MatrixDisplacement_V1.1.8_Windows.zip) | 支座约束符号与给定位移显示 |
 | V1.1.7 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.7/MatrixDisplacement_V1.1.7_Windows.zip) | 后台求解、按需绘图、错误定位 |
 | V1.1.6 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.6/MatrixDisplacement_V1.1.6_Windows.zip) | 导出体验与四图批量导出 |
 | V1.1.5 | [下载 ZIP](https://github.com/ZeyuWen17/MatrixDisplacement/releases/download/v1.1.5/MatrixDisplacement_V1.1.5_Windows.zip) | 内力标注与布局优化 |
@@ -36,7 +41,7 @@
 
 V1.1 仅保留源码归档。完整版本说明及附件见 [Releases](https://github.com/ZeyuWen17/MatrixDisplacement/releases)。页面中的 **Source code (zip/tar.gz)** 是源码，不是免安装程序。
 
-V1.1.5～V1.1.8 包含运行说明，发布页附 SHA256 校验文件及解压自检记录。可在 PowerShell 使用 `Get-FileHash .\MatrixDisplacement_V1.1.8_Windows.zip -Algorithm SHA256` 核对下载文件。
+V1.1.5～V1.1.9 包含运行说明，发布页附 SHA256 校验文件及解压自检记录。可在 PowerShell 使用 `Get-FileHash .\MatrixDisplacement_V1.1.9_Windows.zip -Algorithm SHA256` 核对下载文件。
 
 ### 运行最新源码（Windows）
 
@@ -59,16 +64,25 @@ py -3.12 -m venv .venv
 3. 在“计算结果”中查看数值、杆件截面、内力图和变形图。
 4. 按 **Ctrl+S** 保存模型；从“分析与导出”菜单导出报告、CSV 或图片。
 
-输入统一使用 **m、N、Pa、m²、m⁴、N·m、rad**。整体 X 向右、Y 向上，向下的整体竖向力取负值。修改模型后须重新计算。
+输入框支持 `10 kN`、`200 mm`、`210 GPa`、`100 cm²` 等单位后缀，并校验量纲；不带单位时使用 **m、N、Pa、m²、m⁴、N·m、rad**，保存和结果保持 SI。整体 X 向右、Y 向上，向下的整体竖向力取负值。修改模型后须重新计算。
 
 完整建模练习、单位换算、单元选择、荷载编辑、恢复方法和快捷键见[程序使用指南](source/matrix_displacement_v11/docs/USER_GUIDE.md)。
+
+## 工况与组合快速使用
+
+1. 建模并输入第一组荷载，从“分析与导出 → 荷载工况与组合”命名 `G`，点击“保存当前荷载为工况”。
+2. 点击“清空当前荷载并返回建模”，输入另一组荷载，再打开管理窗口保存为 `Q`。
+3. 在组合系数表填写 `G=1.2`、`Q=1.4`，命名并保存组合；点击“应用表中系数并返回”，按 `Ctrl+R` 计算。
+4. 应用工况或组合会替换当前荷载；先保存需要保留的荷载。窗口中点击“取消”放弃该窗口全部修改。`Ctrl+S` 将当前荷载、工况和组合一起保存。
+
+组合只叠加荷载，给定位移属于共享支座并施加一次；不自动提供规范组合或包络。修改几何后，失效工况会在应用时提示错误，需重新保存。
 
 ## 适用范围
 
 - 面向二维线弹性静力分析与教学，暂不支持空间结构、非线性、动力学或规范设计。
 - 内力图极值来自截面采样，不等同于严格解析极值；密集模型建议隐藏数值标注并使用截面查询。
 - 自动恢复存在防抖间隔，不保证每次编辑即时备份；重要修改请主动保存。
-- 取消计算会丢弃结果，需等待当前数值求解安全结束；大模型首次生成完整标注图仍可能等待数秒。
+- 取消计算会丢弃结果并等待数值求解安全结束；绘图可在分阶段边界取消。完整标注布局及单张 PNG 写入不可中途打断，取消在步骤结束后生效。已完成图片保留，失败写入不破坏原图。
 - 重要结果应结合教材解析解或独立计算核对。多显示器及独立无 Python 电脑的运行验收仍待完成。
 
 ## 开发与文档

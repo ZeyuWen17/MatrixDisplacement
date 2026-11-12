@@ -22,7 +22,7 @@ def test_main_window_solve_and_plots(app):
     assert len(window.editor.model.elements)==1
     window.solve()
     assert window.result is not None
-    assert window.result_tabs.count()==6
+    assert window.result_tabs.count()==8
     assert len(window.figures)==4
     window.close()
 

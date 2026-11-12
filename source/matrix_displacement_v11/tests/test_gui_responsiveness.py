@@ -37,22 +37,27 @@ def window(monkeypatch):
 def test_plots_are_lazy_cached_and_invalidate_on_mode_or_model(window,monkeypatch):
     app,w,errors=window
     calls=[]
-    original=gui.plot_force_diagram
+    import matrix_displacement.visualization as viz
+    original=viz.force_diagram_steps
     def plot(*args,**kwargs):
         calls.append((args[2],kwargs['value_mode']))
         return original(*args,**kwargs)
-    monkeypatch.setattr(gui,'plot_force_diagram',plot)
+    monkeypatch.setattr(viz,'force_diagram_steps',plot)
     w.solve()
     assert w.result is not None and not calls
     assert all(not f.axes for f in w.figures.values())
-    w.result_tabs.setCurrentIndex(4)  # moment
+    select=lambda title: w.result_tabs.setCurrentIndex(next(i for i in range(w.result_tabs.count()) if w.result_tabs.tabText(i)==title))
+    select('弯矩 M')
+    wait_until(app,lambda:w._plot_job is None)
     assert calls==[('M','all')]
     w.result_tabs.setCurrentIndex(0)
-    w.result_tabs.setCurrentIndex(4)
+    select('弯矩 M')
     assert len(calls)==1
     w.force_labels.setCurrentIndex(w.force_labels.findData('none'))
+    wait_until(app,lambda:w._plot_job is None)
     assert calls[-1]==('M','none') and len(calls)==2
-    w.result_tabs.setCurrentIndex(2)
+    select('轴力 N')
+    wait_until(app,lambda:w._plot_job is None)
     assert calls[-1]==('N','none') and len(calls)==3
     w.history.execute(w.editor.add_node,8,2)
     w._modified()

@@ -478,6 +478,8 @@ class StructuralModel:
     constraints: dict[tuple[int,str],float] = field(default_factory=dict)
     loads: dict[tuple[int,str],float] = field(default_factory=dict)
     member_loads: list[UniformLoad2D | LinearLoad2D | PointLoad2D] = field(default_factory=list)
+    load_cases: dict = field(default_factory=dict)
+    load_combinations: dict = field(default_factory=dict)
 
     def add_node(self, node):
         if node.id in self.nodes:

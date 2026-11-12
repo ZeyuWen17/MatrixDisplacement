@@ -73,10 +73,11 @@ def _span(model):
     return max(float(np.ptp(xy[:,0])), float(np.ptp(xy[:,1])), 1.0)
 
 
-def _base(model, ax, *, show_node_ids=True):
+def _base_steps(model, ax, *, show_node_ids=True):
     for e in model.elements.values():
         ni, nj = model.nodes[e.node_i], model.nodes[e.node_j]
         ax.plot([ni.x,nj.x],[ni.y,nj.y],color='0.55',lw=1.5,zorder=1)
+        yield ('结构轮廓', 0, 0)
     coords = np.array([(n.x,n.y) for n in model.nodes.values()])
     ax.scatter(coords[:,0],coords[:,1],s=18,color='0.25',zorder=5)
     if show_node_ids:
@@ -103,6 +104,7 @@ def _base(model, ax, *, show_node_ids=True):
         artist.set_gid(f'support:{nid}')
         artist.set_zorder(4)
         ax.add_artist(artist)
+        yield ('支座符号', 0, 0)
         if support.prescribed:
             ax.annotate(support.detail,(node.x,node.y),xytext=(12,-36),
                         textcoords='offset points',fontsize=7,color=color)
@@ -112,6 +114,16 @@ def _base(model, ax, *, show_node_ids=True):
     ax.grid(True,alpha=0.2)
     ax.margins(0.15)
     return ax
+
+
+def _consume(steps):
+    while True:
+        try: next(steps)
+        except StopIteration as done: return done.value
+
+
+def _base(model, ax, *, show_node_ids=True):
+    return _consume(_base_steps(model, ax, show_node_ids=show_node_ids))
 
 
 def _plot_member_load_arrows(model, ax):
@@ -164,7 +176,7 @@ def plot_structure(model, *, ax=None, show_node_ids=True, show_loads=False):
     return ax
 
 
-def plot_force_diagram(model, result, component, *, ax=None, points=201,
+def force_diagram_steps(model, result, component, *, ax=None, points=201,
                        scale=None, show_node_ids=True, interactive=False,
                        show_values=True, value_mode='all'):
     """Plot axial N, shear V or moment M alongside the member centerlines.
@@ -183,18 +195,21 @@ def plot_force_diagram(model, result, component, *, ax=None, points=201,
     ax = _axes(ax)
     if not model.elements:
         raise ValueError('Model has no elements')
-    responses = [(e, _response(model,result,e.id)) for e in model.elements.values()]
-    diagrams = [(e,r,r.sample_sections(points=points)) for e,r in responses]
+    diagrams = []
+    for i, e in enumerate(model.elements.values(), 1):
+        r = _response(model,result,e.id)
+        diagrams.append((e,r,r.sample_sections(points=points)))
+        yield ('截面采样', i, len(model.elements))
     max_force = max((float(np.max(np.abs(getattr(samples,key)))) for _,_,samples in diagrams),default=0.0)
     if scale is None:
         scale = .18*_span(model)/max_force if max_force else 0.0
     if not np.isfinite(scale) or scale < 0:
         raise ValueError('Diagram scale must be a finite nonnegative number')
-    _base(model, ax, show_node_ids=show_node_ids)
+    yield from _base_steps(model, ax, show_node_ids=show_node_ids)
     unit = 'N·m' if key == 'M' else 'N'
     label_count = 0
     force_labels = []
-    for element, r, samples in diagrams:
+    for index, (element, r, samples) in enumerate(diagrams, 1):
         n = model.nodes[element.node_i]
         x = samples.x
         ordinates = getattr(samples,key) * scale
@@ -227,7 +242,7 @@ def plot_force_diagram(model, result, component, *, ax=None, points=201,
             # In particular, duplicate x values encode the two sides of a point force.
             line.set_gid(f'md-member:{element.id}:{key}')
             line.set_picker(7)  # points; matches dense force diagrams at any zoom
-        # Dimensionless diagram supports any member orientation.
+        yield ('内力曲线', index, len(diagrams))
     from matplotlib import font_manager
     available = {font.name for font in font_manager.fontManager.ttflist}
     chinese_font = next((name for name in ('Microsoft YaHei','SimHei','Noto Sans CJK SC')
@@ -247,7 +262,7 @@ def plot_force_diagram(model, result, component, *, ax=None, points=201,
     return ax
 
 
-def plot_deformed_shape(model, result, *, ax=None, points=201,
+def deformed_shape_steps(model, result, *, ax=None, points=201,
                         scale=None, show_node_ids=True):
     """Plot true within-member Euler--Bernoulli deformation, amplified for display.
 
@@ -258,19 +273,23 @@ def plot_deformed_shape(model, result, *, ax=None, points=201,
     ax = _axes(ax)
     if not model.elements:
         raise ValueError('Model has no elements')
-    fields = [(e, _response(model,result,e.id)) for e in model.elements.values()]
-    fields = [(e,r,r.sample_deformation(points=points)) for e,r in fields]
+    fields = []
+    for i, e in enumerate(model.elements.values(), 1):
+        r = _response(model,result,e.id)
+        fields.append((e,r,r.sample_deformation(points=points)))
+        yield ('变形采样', i, len(model.elements))
     max_u = max((float(np.max(np.hypot(s.ux_global,s.uy_global))) for _,_,s in fields),default=0.0)
     if scale is None:
         scale = .18*_span(model)/max_u if max_u else 1.0
     if not np.isfinite(scale) or scale < 0:
         raise ValueError('Deformation magnification must be a finite nonnegative number')
-    _base(model, ax, show_node_ids=show_node_ids)
-    for e, r, samples in fields:
+    yield from _base_steps(model, ax, show_node_ids=show_node_ids)
+    for index, (e, r, samples) in enumerate(fields, 1):
         n = model.nodes[e.node_i]
         x = n.x + r.c*samples.x + scale*samples.ux_global
         y = n.y + r.s*samples.x + scale*samples.uy_global
         ax.plot(x,y,lw=2,zorder=3)
+        yield ('变形曲线', index, len(fields))
     ax.set_title(f'Deformed shape (magnification ×{scale:.3g})')
     ax.relim(); ax.autoscale_view()
     return ax
@@ -290,3 +309,12 @@ def plot_member_section_diagram(model, result, element_id, component, *, ax=None
     ax.set_title(f'Element {element_id}: {key}(x)')
     ax.grid(True,alpha=.2)
     return ax
+
+
+def plot_force_diagram(model, result, component, **kwargs):
+    """Synchronous API; desktop uses the same incremental drawing implementation."""
+    return _consume(force_diagram_steps(model, result, component, **kwargs))
+
+
+def plot_deformed_shape(model, result, **kwargs):
+    return _consume(deformed_shape_steps(model, result, **kwargs))

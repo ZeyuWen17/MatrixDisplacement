@@ -24,7 +24,7 @@ def test_v08_table_and_inspector(app):
         assert window.prop_table.rowCount()==1
         assert window.load_table.rowCount()==2
         window.solve()
-        assert window.result_tabs.count()==6
+        assert window.result_tabs.count()==8
         assert 'N(x)=' in window.inspect_text.toPlainText()
         assert window.inspect_element_box.count()==1
         window.inspect_x.setValue(1.7)

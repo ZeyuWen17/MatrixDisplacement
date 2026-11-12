@@ -74,7 +74,7 @@ def model_to_dict(model):
                                  'system':load.system})
         else:
             raise TypeError(f'Cannot serialize member load {type(load).__name__}')
-    return {
+    data = {
         'schema_version': SCHEMA_VERSION, 'units': 'SI',
         'nodes': [{'id':n.id,'x':n.x,'y':n.y} for n in sorted(model.nodes.values(),key=lambda n:n.id)],
         'materials': [{'id':m.id,'E':m.E} for m in sorted(model.materials.values(),key=lambda m:m.id)],
@@ -86,13 +86,19 @@ def model_to_dict(model):
                         for (nid,dof),v in sorted(model.loads.items())],
         'member_loads': member_loads,
     }
+    if model.load_cases or model.load_combinations:
+        from copy import deepcopy
+        data.update(schema_version=3, load_cases=deepcopy(model.load_cases),
+                    load_combinations=deepcopy(model.load_combinations))
+    return data
 
 
 def model_from_dict(data):
     """Validate and rebuild one model; reject unknown schema/type/field data."""
-    _keys(data, TOP_KEYS, 'Model')
-    if type(data['schema_version']) is not int or data['schema_version'] not in (1, SCHEMA_VERSION):
-        raise ValueError(f'Unsupported model schema_version (expected 1 or {SCHEMA_VERSION})')
+    extended = isinstance(data, dict) and data.get('schema_version') == 3
+    _keys(data, TOP_KEYS | {'load_cases', 'load_combinations'} if extended else TOP_KEYS, 'Model')
+    if type(data['schema_version']) is not int or data['schema_version'] not in (1, 2, 3):
+        raise ValueError('Unsupported model schema_version (expected 1, 2 or 3)')
     if data['units'] != 'SI':
         raise ValueError("Model units must be 'SI'")
     m = StructuralModel()
@@ -158,6 +164,52 @@ def model_from_dict(data):
             load=PointLoad2D(eid,_number(row['position'],'position'),
                              _number(row['fx'],'fx'),_number(row['fy'],'fy'),row['system'])
         m.add_member_load(load)
+    if extended:
+        from copy import deepcopy
+        from .load_cases import checked_name
+        for key in ('load_cases', 'load_combinations'):
+            if not isinstance(data[key], dict):
+                raise ValueError(f'{key} must be an object')
+        for name, case in data['load_cases'].items():
+            if checked_name(name) != name:
+                raise ValueError('工况名称不能带首尾空格')
+            _keys(case, ('nodal_loads', 'member_loads'), 'Load case')
+            # Validate syntax independently of current geometry: editing geometry
+            # may leave saved cases obsolete; applying them validates references.
+            if not all(isinstance(case[k], list) for k in case):
+                raise ValueError('工况荷载必须为数组')
+            seen = set()
+            for row in case['nodal_loads']:
+                _keys(row, ('node_id', 'dof', 'value'), 'Case nodal load')
+                nid = _integer_id(row['node_id'], 'Case node_id')
+                dof = row['dof']
+                if not isinstance(dof, str) or dof not in ('ux', 'uy', 'rz') or (nid, dof) in seen:
+                    raise ValueError('工况自由度名称无效或重复')
+                seen.add((nid, dof))
+                _number(row['value'], 'Case load value')
+            for row in case['member_loads']:
+                if not isinstance(row, dict) or row.get('type') not in LOAD_TYPES:
+                    raise ValueError('Unknown case member load type')
+                typ = row['type']
+                components = {'UniformLoad2D': ('qx', 'qy'),
+                              'LinearLoad2D': ('qx_i', 'qy_i', 'qx_j', 'qy_j'),
+                              'PointLoad2D': ('position', 'fx', 'fy')}[typ]
+                _keys(row, ('type', 'element_id', 'system') + components, 'Case member load')
+                _integer_id(row['element_id'], 'Case element_id')
+                if row['system'] not in ('local', 'global'):
+                    raise ValueError('Invalid case load coordinate system')
+                for component in components:
+                    _number(row[component], component)
+        for name, factors in data['load_combinations'].items():
+            checked_name(name)
+            if not isinstance(factors, dict) or not factors:
+                raise ValueError('组合至少需要一个工况')
+            for case, factor in factors.items():
+                if case not in data['load_cases']:
+                    raise ValueError('组合引用不存在的工况')
+                _number(factor, '组合系数')
+        m.load_cases = deepcopy(data['load_cases'])
+        m.load_combinations = deepcopy(data['load_combinations'])
     return m
 
 

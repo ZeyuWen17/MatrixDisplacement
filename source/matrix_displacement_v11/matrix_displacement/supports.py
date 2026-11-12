@@ -23,7 +23,15 @@ def support_symbol(model, node_id):
         half=len(element.local_dofs)//2
         if element.node_i==node_id:active.update(element.local_dofs[:half])
         if element.node_j==node_id:active.update(element.local_dofs[half:])
-    beam_fixed=active=={'uy','rz'} and fixed=={'uy','rz'}
+    return support_from_values(values, active)
+
+
+def support_from_values(values, active=()):
+    """Describe pending dialog values without mutating a structural model."""
+    if not values:
+        return None
+    fixed=set(values)
+    beam_fixed=set(active)=={'uy','rz'} and fixed=={'uy','rz'}
     names={frozenset({'ux','uy','rz'}):'固定支座',frozenset({'ux','uy'}):'铰支座',
            frozenset({'uy'}):'竖向约束 · 水平可动',frozenset({'ux'}):'水平约束 · 竖向可动',
            frozenset({'rz'}):'仅转角约束',frozenset({'uy','rz'}):'竖向与转角约束 · 水平可动',
