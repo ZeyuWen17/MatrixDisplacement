@@ -375,7 +375,7 @@ class ModelCanvas(QGraphicsView):
         self.setScene(self.canvas_scene)
         self.setRenderHint(QPainter.RenderHint.Antialiasing)
         self.setMouseTracking(True)
-        self.setSceneRect(-300,-260,650,520)
+        self.canvas_scene.setSceneRect(-300,-260,650,520)
         self.setBackgroundBrush(QBrush(QColor('#f8fafc')))
         self.setTransformationAnchor(QGraphicsView.ViewportAnchor.AnchorUnderMouse)
         self.setResizeAnchor(QGraphicsView.ViewportAnchor.AnchorViewCenter)
@@ -621,40 +621,101 @@ class ModelCanvas(QGraphicsView):
             if mz:
                 add_label(f'{"↶" if mz>0 else "↷"} {mz:.3g} N·m', '#dc2626',
                           .8, p.x(), p.y(), -25, -24)
-        grouped={}
-        for load in model.member_loads:
-            grouped.setdefault(load.element_id,[]).append(load)
-        for eid,loads in grouped.items():
-            e=model.elements[eid]
-            a,b=_point(model.nodes[e.node_i]),_point(model.nodes[e.node_j])
-            x,y=(a.x()+b.x())/2,(a.y()+b.y())/2
-            for j,load in enumerate(loads):
-                label=_member_load_label(load)
-                add_label(label, '#be123c', .71, x, y, 5, 6+j*18,
-                          tooltip=label)
+        for index,load in enumerate(model.member_loads,1):
+            e=model.elements[load.element_id]
+            L,c,sine=e.geometry(model)
+            origin=model.nodes[e.node_i]
+            concentrated=isinstance(load,PointLoad2D)
+            load_color='#dc2626' if concentrated else ('#0f766e' if isinstance(load,UniformLoad2D) else '#9333ea')
+            label=f'E{e.id} · 荷载{index}\n'+_member_load_label(load)
+            if isinstance(load,PointLoad2D):
+                stations=[(load.position,load.fx,load.fy)]
+            else:
+                stations=[]
+                for k in range(9):
+                    t=k/8
+                    if isinstance(load,UniformLoad2D):qx,qy=load.qx,load.qy
+                    else:qx,qy=(1-t)*load.qx_i+t*load.qx_j,(1-t)*load.qy_i+t*load.qy_j
+                    stations.append((t*L,qx,qy))
+            vectors=[]
+            for position,fx,fy in stations:
+                if load.system=='local':fx,fy=c*fx-sine*fy,sine*fx+c*fy
+                vectors.append((position,fx,fy))
+            maximum=max((math.hypot(fx,fy) for _,fx,fy in vectors),default=0.)
+            tails=[]
+            for position,fx,fy in vectors:
+                px=(origin.x+c*position)*PIXELS_PER_METRE
+                py=-(origin.y+sine*position)*PIXELS_PER_METRE
+                factor=(58 if concentrated else 32)/maximum if maximum else 0.
+                tx,ty=px-factor*fx,py+factor*fy
+                if math.hypot(fx,fy)>0:
+                    items=self._arrow(sc,tx,ty,px,py,load_color,width=3 if concentrated else 1.5,head_size=11 if concentrated else 6)
+                    for item in items:
+                        item.setToolTip(label)
+                        item.setData(0,'member-load')
+                        item.setData(1,index-1)
+                    obstacles.append((min(tx,px)-4,min(ty,py)-4,max(tx,px)+4,max(ty,py)+4))
+                tails.append(QPointF(tx,ty))
+            if not isinstance(load,PointLoad2D):
+                for first,last in zip(tails,tails[1:]):
+                    item=sc.addLine(QLineF(first,last),QPen(QColor(load_color),1))
+                    item.setToolTip(label)
+                    item.setData(0,'member-load-envelope')
+            anchor=tails[len(tails)//2]
+            add_label(label,load_color,.78,anchor.x(),anchor.y(),8,-30,tooltip=label)
         # Resolve annotation collisions *after* all tags are collected.
         if pending_labels:
             requested = [item[1] for item in pending_labels]
             for (tag, _), (x, y) in zip(pending_labels, place_labels(requested, obstacles)):
                 tag.setPos(x, y)
+        if model.loads or model.member_loads:
+            self._draw_load_legend(sc)
         if model.nodes:
             px=[_point(n).x() for n in model.nodes.values()]
             py=[_point(n).y() for n in model.nodes.values()]
             min_x,max_x,min_y,max_y=min(px),max(px),min(py),max(py)
             padding=2*PIXELS_PER_METRE
-            sc.setSceneRect(QRectF(min_x-padding,min_y-padding,
-                                   max(300,max_x-min_x+2*padding),
-                                   max(260,max_y-min_y+2*padding)))
+            geometry_rect=QRectF(min_x-padding,min_y-padding,
+                                max(300,max_x-min_x+2*padding),
+                                max(260,max_y-min_y+2*padding))
+            sc.setSceneRect(geometry_rect.united(sc.itemsBoundingRect().adjusted(-20,-20,20,20)))
         else:
             sc.setSceneRect(-320,-240,640,480)
 
-    def _arrow(self,sc,x0,y0,x1,y1,color):
-        sc.addLine(x0,y0,x1,y1,QPen(QColor(color),2))
+    def _arrow(self,sc,x0,y0,x1,y1,color,*,width=2,head_size=9):
+        line=sc.addLine(x0,y0,x1,y1,QPen(QColor(color),width))
         angle=math.atan2(y1-y0,x1-x0)
         head=QPolygonF([QPointF(x1,y1),
-                        QPointF(x1-9*math.cos(angle-.45),y1-9*math.sin(angle-.45)),
-                        QPointF(x1-9*math.cos(angle+.45),y1-9*math.sin(angle+.45))])
-        sc.addPolygon(head,QPen(QColor(color),1),QBrush(QColor(color)))
+                        QPointF(x1-head_size*math.cos(angle-.45),y1-head_size*math.sin(angle-.45)),
+                        QPointF(x1-head_size*math.cos(angle+.45),y1-head_size*math.sin(angle+.45))])
+        tip=sc.addPolygon(head,QPen(QColor(color),1),QBrush(QColor(color)))
+        return line,tip
+
+    def _draw_load_legend(self,sc):
+        bounds=sc.itemsBoundingRect()
+        x,y=bounds.left(),bounds.bottom()+24
+        items=[]
+        for row,(name,color,kind) in enumerate((
+                ('集中荷载：单支粗箭头（N）','#dc2626','point'),
+                ('均布荷载：等长细箭头 + 直线（N/m）','#0f766e','uniform'),
+                ('线性荷载：渐变细箭头 + 斜线（N/m）','#9333ea','linear'))):
+            top=y+row*46
+            if kind=='point':
+                items.extend(self._arrow(sc,x+24,top,x+24,top+30,color,width=3,head_size=9))
+            else:
+                tails=[]
+                for k in range(4):
+                    px=x+8+k*12
+                    py=top+(0 if kind=='uniform' else 20-k*6)
+                    items.extend(self._arrow(sc,px,py,px,top+30,color,width=1.5,head_size=5))
+                    tails.append(QPointF(px,py))
+                items.append(sc.addLine(QLineF(tails[0],tails[-1]),QPen(QColor(color),1)))
+            text=sc.addText(name)
+            text.setDefaultTextColor(QColor(color));text.setPos(x+68,top+5)
+            items.append(text)
+        note=sc.addText('荷载图例 · 箭头长度为示意，大小以标注数值为准')
+        note.setPos(x,y+140);note.setDefaultTextColor(QColor('#475569'));items.append(note)
+        for item in items:item.setData(0,'load-legend')
 
     def fit_all(self):
         self.fitInView(self.canvas_scene.sceneRect(),Qt.AspectRatioMode.KeepAspectRatio)

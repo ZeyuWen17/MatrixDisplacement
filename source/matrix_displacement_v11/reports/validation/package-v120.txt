@@ -1,0 +1,1 @@
+{"version": "1.2.0", "archive": "MatrixDisplacement_V1.2.0_Windows.zip", "bytes": 75356204, "sha256": "bd56f3cbccd766e3cc4dc9ea11322b7cd378cce4b0aa621e14584ce610155f62", "exe_sha256": "7ee8d63a5484036ccb23dd0eb121147dc20b577fc28345d27a16a7b1b62ef6b6", "files": 1041, "extracted_files_verified": true, "isolated_path_self_test": "PASS", "architecture": "Windows x64"}
